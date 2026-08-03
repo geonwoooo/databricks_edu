@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Databricks Certified Data Engineer Associate 모바일 문제집</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            line-height: 1.6;
+            padding-bottom: 70px;
+        }
+        header {
+            background-color: #1b3142;
+            color: #fff;
+            padding: 16px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        header h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ff3b00;
+            margin-bottom: 4px;
+        }
+        header p {
+            font-size: 12px;
+            color: #cfd8dc;
+        }
+        .controls {
+            background: #fff;
+            padding: 12px 16px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            border-bottom: 1px solid #e0e0e0;
+            position: sticky;
+            top: 60px;
+            z-index: 99;
+        }
+        .controls select, .controls input {
+            padding: 8px 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            outline: none;
+        }
+        .controls select { flex: 1; }
+        .controls input { width: 80px; text-align: center; }
+        .container {
+            padding: 12px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            border: 1px solid #eef2f5;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #ff3b00;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .q-num {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1b3142;
+        }
+        .day-badge {
+            background: #eef4ff;
+            color: #0052cc;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+        .note-toggle-btn {
+            background: #f0f4f8;
+            border: 1px solid #d0d7de;
+            color: #1b3142;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        .note-toggle-btn:hover { background: #e1e8ed; }
+
+        .card-body {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+        .q-content { flex: 1; }
+        
+        .q-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 12px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        /* 보기 선택지 스타일 */
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .option-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 10px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: #fafafa;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+        .option-item:hover {
+            background-color: #f0f4f8;
+        }
+        .option-item input[type="radio"] {
+            margin-top: 3px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        
+        /* 채점 상태 스타일 */
+        .option-item.correct {
+            background-color: #e6f4ea !important;
+            border-color: #34a853 !important;
+            color: #137333;
+            font-weight: 600;
+        }
+        .option-item.incorrect {
+            background-color: #fce8e6 !important;
+            border-color: #ea4335 !important;
+            color: #c5221f;
+        }
+
+        .toggle-en {
+            font-size: 12px;
+            color: #0066cc;
+            cursor: pointer;
+            text-decoration: underline;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+        .q-en-text {
+            display: none;
+            font-size: 13px;
+            color: #555;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            white-space: pre-wrap;
+            border-left: 3px solid #6c757d;
+        }
+        .ans-btn {
+            width: 100%;
+            background: #ff3b00;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 8px;
+        }
+        .ans-btn:active { background: #d63200; }
+        .ans-box {
+            display: none;
+            margin-top: 12px;
+            padding: 12px;
+            background: #f0f9ff;
+            border-radius: 8px;
+            border-left: 4px solid #0084ff;
+        }
+        .ans-correct {
+            font-size: 15px;
+            font-weight: bold;
+            color: #0084ff;
+            margin-bottom: 6px;
+        }
+        .exp-box {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed #b3d7ff;
+        }
+        .exp-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: #0052cc;
+            margin-bottom: 4px;
+        }
+        .exp-text {
+            font-size: 13px;
+            color: #444;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+        
+        .note-panel {
+            display: none;
+            background: #fffbe6;
+            border: 1px solid #ffe58f;
+            border-radius: 8px;
+            padding: 12px;
+            flex-direction: column;
+        }
+        .note-panel h4 {
+            font-size: 13px;
+            color: #873800;
+            margin-bottom: 8px;
+        }
+        .note-textarea {
+            width: 100%;
+            height: 100%;
+            min-height: 100px;
+            padding: 8px;
+            font-size: 13px;
+            border: 1px solid #ffd591;
+            border-radius: 6px;
+            resize: vertical;
+            outline: none;
+            background: #fff;
+            font-family: inherit;
+        }
+        .note-textarea:focus {
+            border-color: #ffa940;
+            box-shadow: 0 0 0 2px rgba(250, 140, 22, 0.2);
+        }
+
+        @media (min-width: 768px) {
+            .card-body.has-note {
+                grid-template-columns: 1fr 280px;
+            }
+            .note-textarea {
+                min-height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Databricks Associate (228문항)</h1>
+    <p>10일 완성 모바일 학습 앱</p>
+</header>
+
+<div class="controls">
+    <select id="daySelect" onchange="filterDay()">
+        <option value="all">전체 문제 보기 (1 ~ 228)</option>
+        <option value="1">Day 1 (문제 1 ~ 23)</option>
+        <option value="2">Day 2 (문제 24 ~ 46)</option>
+        <option value="3">Day 3 (문제 47 ~ 69)</option>
+        <option value="4">Day 4 (문제 70 ~ 92)</option>
+        <option value="5">Day 5 (문제 93 ~ 115)</option>
+        <option value="6">Day 6 (문제 116 ~ 138)</option>
+        <option value="7">Day 7 (문제 139 ~ 161)</option>
+        <option value="8">Day 8 (문제 162 ~ 184)</option>
+        <option value="9">Day 9 (문제 185 ~ 206)</option>
+        <option value="10">Day 10 (문제 207 ~ 228)</option>
+    </select>
+    <input type="number" id="gotoInput" placeholder="문제 No." min="1" max="228" onchange="gotoQuestion()">
+</div>
+
+<div class="container" id="qContainer"></div>
+
+<script>
+    const data = [
+        {"no": 1, "q_en": "Which compute option should be chosen in a scenario where small-scale ad-hoc Python scripts\nneed to be run at high frequency and should wind down quickly after these queries have finished running?\n\nA. All-purpose Cluster\nB. Job Cluster\nC. Serverless Compute\nD. SQL Warehouse", "q_kr": "소규모의 애드혹(ad-hoc) Python 스크립트를 높은 빈도로 실행해야 하고, 실행이 끝난 후에는 컴퓨트가 빠르게 종료되어야 하는 상황에서는 어떤 컴퓨트 옵션을 선택해야 하는가?\n\nA. All-purpose Cluster\nB. Job Cluster\nC. Serverless Compute\nD. SQL Warehouse", "ans": "C", "exp": "큰 클러스터가 필요없는 소규모 + 높은 빈도로 컴퓨트가 꺼졌다가 켜짐 (adhoc) \n+ 빠르게 종료 \n Serverless는 실행 시 빠르게 가동되고 자동으로 종료되며, Databricks가 관리하기 때문에\n관리할 필요가 없어 가장 가볍고 빠른 모드"},
+        {"no": 2, "q_en": "A data engineer is debugging a Python notebook in Databricks that processes a dataset using PySpark. The notebook fails with an error during a DataFrame transformation. The engineer wants to inspect the state of variables, such as the input DataFrame and intermediate results, to identify where the error occurs. Which tool should the engineer use to debug the notebook and inspect the values of variables like DataFrames?\n\nA. Use the Databricks CLI to download and analyze driver logs for detailed error messages\nB. Use the Python Notebook Interactive Debugger to set breakpoints and inspect variable values in real-time\nC. Use the Ganglia UI to monitor cluster resource usage and identify hardware issues\nD. Use the Spark UI to analyze the execution plan and identify stages where the job failed", "q_kr": "데이터 엔지니어가 PySpark를 사용하여 데이터셋을 처리하는 Databricks의 Python notebook을 디버깅하고 있습니다. notebook은 DataFrame 변환 중에 오류로 실패합니다. 엔지니어는 오류가 발생한 위치를 파악하기 위해 입력 DataFrame 및 중간 결과와 같은 변수의 상태를 검사하려고 합니다.\n엔지니어가 notebook을 디버깅하고 DataFrame과 같은 변수 값을 검사하는 데 사용해야 할 도구는 무엇입니까?\n\nA. Databricks CLI를 사용하여 드라이버 로그를 다운로드하고 분석하여 상세한 오류 메시지를 확인한다\nB. Python Notebook Interactive Debugger를 사용하여 브레이크포인트를 설정하고 변수 값을 실시간으로 검사한다\nC. Ganglia UI를 사용하여 클러스터 리소스 사용량을 모니터링하고 하드웨어 문제를 식별한다\nD. Spark UI를 사용하여 실행 계획을 분석하고 작업이 실패한 단계를 식별한다", "ans": "B", "exp": "Databricks의 Python Notebook Interactive Debugger는 코드 실행을 일시 중지하고, 한 줄씩 단계별로 실행하며, DataFrame을 포함한 변수의 값을 실시간으로 검사할 수 있는 도구입니다."},
+        {"no": 3, "q_en": "A data engineer has created a new database using the following command:\nCREATE DATABASE IF NOT EXISTS customer360;\nIn which of the following locations will the customer360 database be located?\n\nA. dbfs:/user/hive/database/customer360\nB. dbfs:/user/hive/warehouse\nC. dbfs:/user/hive/customer360\nD. More information is needed to determine the correct response\nE. dbfs:/user/hive/database", "q_kr": "데이터 엔지니어가 다음 명령을 사용하여 새 데이터베이스를 생성했습니다:\nCREATE DATABASE IF NOT EXISTS customer360;\n아래 중 customer360 데이터베이스가 위치하게 될 경로는 어디입니까?\n\nA. dbfs:/user/hive/database/customer360\nB. dbfs:/user/hive/warehouse\nC. dbfs:/user/hive/customer360\nD. 올바른 응답을 결정하기 위해 추가 정보가 필요하다\nE. dbfs:/user/hive/database", "ans": "B", "exp": "LOCATION을 명시하지 않으면 Databricks의 기본 Hive 메타스토어 경로인 dbfs:/user/hive/warehouse에 데이터베이스가 생성됩니다."}
+    ];
+
+    function getDayByNo(no) {
+        if (no <= 23) return 1;
+        if (no <= 46) return 2;
+        if (no <= 69) return 3;
+        if (no <= 92) return 4;
+        if (no <= 115) return 5;
+        if (no <= 138) return 6;
+        if (no <= 161) return 7;
+        if (no <= 184) return 8;
+        if (no <= 206) return 9;
+        return 10;
+    }
+
+    // 텍스트에서 문제 본문과 보기(A, B, C, D...) 분리 파싱
+    function parseQuestion(qKr) {
+        const lines = qKr.split('\n');
+        let title = '';
+        const options = [];
+
+        lines.forEach(line => {
+            const trimmed = line.trim();
+            const match = trimmed.match(/^([A-E])\.\s*(.+)/);
+            if (match) {
+                options.push({ key: match[1], text: match[2] });
+            } else {
+                title += line + '\n';
+            }
+        });
+
+        return { title: title.trim(), options };
+    }
+
+    function renderQuestions(items) {
+        const container = document.getElementById('qContainer');
+        container.innerHTML = '';
+
+        items.forEach(item => {
+            const day = getDayByNo(item.no);
+            const savedNote = localStorage.getItem(`note_q_${item.no}`) || '';
+            const userChoice = localStorage.getItem(`choice_q_${item.no}`) || '';
+            const parsed = parseQuestion(item.q_kr);
+
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.id = `q-${item.no}`;
+
+            // 보기 HTML 생성
+            let optionsHtml = '';
+            if (parsed.options.length > 0) {
+                optionsHtml = `<div class="options-list">`;
+                parsed.options.forEach(opt => {
+                    const isChecked = userChoice === opt.key ? 'checked' : '';
+                    optionsHtml += `
+                        <label class="option-item" id="opt-label-${item.no}-${opt.key}">
+                            <input type="radio" name="option-${item.no}" value="${opt.key}" ${isChecked} onchange="selectOption(${item.no}, '${opt.key}', '${item.ans}')">
+                            <span><strong>${opt.key}.</strong> ${escapeHtml(opt.text)}</span>
+                        </label>
+                    `;
+                });
+                optionsHtml += `</div>`;
+            }
+
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="header-left">
+                        <span class="q-num">Q${item.no}.</span>
+                        <span class="day-badge">Day ${day}</span>
+                    </div>
+                    <button class="note-toggle-btn" onclick="toggleNote(${item.no})" title="오답노트 펼치기/접기">&gt;</button>
+                </div>
+                
+                <div class="card-body" id="body-${item.no}">
+                    <div class="q-content">
+                        <div class="q-title">${escapeHtml(parsed.title)}</div>
+                        ${optionsHtml}
+
+                        ${item.q_en ? `
+                            <span class="toggle-en" onclick="toggleEn(${item.no})">영문 문제 보기</span>
+                            <div class="q-en-text" id="en-${item.no}">${escapeHtml(item.q_en)}</div>
+                        ` : ''}
+                        
+                        <button class="ans-btn" onclick="toggleAns(${item.no})">정답 및 해설 확인</button>
+                        
+                        <div class="ans-box" id="ans-${item.no}">
+                            <div class="ans-correct" id="ans-result-${item.no}">정답: ${item.ans}</div>
+                            ${item.exp ? `
+                                <div class="exp-box">
+                                    <div class="exp-title">💡 [문제 해설]</div>
+                                    <div class="exp-text">${escapeHtml(item.exp)}</div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+
+                    <div class="note-panel" id="note-${item.no}">
+                        <h4>📝 오답 메모</h4>
+                        <textarea class="note-textarea" id="textarea-${item.no}" 
+                            placeholder="이 문제에 대한 메모를 기록하세요..." 
+                            oninput="saveNote(${item.no}, this.value)">${escapeHtml(savedNote)}</textarea>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+
+            // 기존에 선택된 답안이 있다면 UI 채점 적용
+            if (userChoice) {
+                applyGradingUI(item.no, userChoice, item.ans);
+            }
+        });
+    }
+
+    function selectOption(qNo, selectedKey, correctKey) {
+        localStorage.setItem(`choice_q_${qNo}`, selectedKey);
+        applyGradingUI(qNo, selectedKey, correctKey);
+        
+        // 답 선택 시 해설 박스 자동 열기
+        const ansBox = document.getElementById(`ans-${qNo}`);
+        if (ansBox) ansBox.style.display = 'block';
+    }
+
+    function applyGradingUI(qNo, selectedKey, correctKey) {
+        const labels = document.querySelectorAll(`[id^="opt-label-${qNo}-"]`);
+        labels.forEach(label => {
+            label.classList.remove('correct', 'incorrect');
+        });
+
+        const selectedLabel = document.getElementById(`opt-label-${qNo}-${selectedKey}`);
+        const correctLabel = document.getElementById(`opt-label-${qNo}-${correctKey}`);
+
+        if (selectedKey === correctKey) {
+            if (selectedLabel) selectedLabel.classList.add('correct');
+        } else {
+            if (selectedLabel) selectedLabel.classList.add('incorrect');
+            if (correctLabel) correctLabel.classList.add('correct');
+        }
+
+        const resultText = document.getElementById(`ans-result-${qNo}`);
+        if (resultText) {
+            if (selectedKey === correctKey) {
+                resultText.innerHTML = `⭕ 정답입니다! (선택: ${selectedKey})`;
+                resultText.style.color = '#34a853';
+            } else {
+                resultText.innerHTML = `❌ 오답입니다. (선택: ${selectedKey} / 정답: ${correctKey})`;
+                resultText.style.color = '#ea4335';
+            }
+        }
+    }
+
+    function escapeHtml(str) {
+        return str ? str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;") : '';
+    }
+
+    function toggleEn(no) {
+        const el = document.getElementById(`en-${no}`);
+        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function toggleAns(no) {
+        const el = document.getElementById(`ans-${no}`);
+        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function toggleNote(no) {
+        const noteEl = document.getElementById(`note-${no}`);
+        const bodyEl = document.getElementById(`body-${no}`);
+        const btnEl = document.querySelector(`#q-${no} .note-toggle-btn`);
+        
+        if (noteEl.style.display === 'flex') {
+            noteEl.style.display = 'none';
+            bodyEl.classList.remove('has-note');
+            btnEl.innerText = '>';
+        } else {
+            noteEl.style.display = 'flex';
+            bodyEl.classList.add('has-note');
+            btnEl.innerText = 'v';
+        }
+    }
+
+    function saveNote(no, value) {
+        localStorage.setItem(`note_q_${no}`, value);
+    }
+
+    function filterDay() {
+        const selected = document.getElementById('daySelect').value;
+        if (selected === 'all') {
+            renderQuestions(data);
+        } else {
+            const filtered = data.filter(item => getDayByNo(item.no) === parseInt(selected));
+            renderQuestions(filtered);
+        }
+    }
+
+    function gotoQuestion() {
+        const qNum = parseInt(document.getElementById('gotoInput').value);
+        if (!qNum || qNum < 1 || qNum > 228) return;
+
+        document.getElementById('daySelect').value = 'all';
+        renderQuestions(data);
+
+        setTimeout(() => {
+            const target = document.getElementById(`q-${qNum}`);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }, 100);
+    }
+
+    renderQuestions(data);
+</script>
+
+</body>
+</html>
