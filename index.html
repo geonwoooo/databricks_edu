@@ -59,6 +59,7 @@
             border-radius: 4px;
             font-size: 0.95em;
             color: #594500;
+            white-space: pre-wrap;
         }
         .english-title {
             font-weight: bold;
@@ -202,7 +203,7 @@
     <!-- 상단 페이징 -->
     <div id="pagination-top" class="pagination" style="display:none;">
         <button id="prev-btn-top" class="page-btn" onclick="changePage(-1)">이전</button>
-        <span id="page-info-top" class="page-info">1 / 16</span>
+        <span id="page-info-top" class="page-info">1 / 1</span>
         <button id="next-btn-top" class="page-btn" onclick="changePage(1)">다음</button>
     </div>
 
@@ -214,7 +215,7 @@
     <!-- 하단 페이징 -->
     <div id="pagination-bottom" class="pagination" style="display:none;">
         <button id="prev-btn-bottom" class="page-btn" onclick="changePage(-1)">이전</button>
-        <span id="page-info-bottom" class="page-info">1 / 16</span>
+        <span id="page-info-bottom" class="page-info">1 / 1</span>
         <button id="next-btn-bottom" class="page-btn" onclick="changePage(1)">다음</button>
     </div>
 
@@ -233,7 +234,7 @@
                 renderPage();
             } catch (error) {
                 console.error('데이터 로드 실패:', error);
-                container.innerHTML = `<p style="color:#d73a49; text-align:center;"><b>데이터를 불러오지 못했습니다.</b><br>data.json 파일 유무를 확인해주세요.</p>`;
+                container.innerHTML = `<p style="color:#d73a49; text-align:center;"><b>데이터를 불러오지 못했습니다.</b><br>data.json 파일 유무 및 경로를 확인해주세요.</p>`;
             }
         }
 
@@ -241,7 +242,7 @@
             const container = document.getElementById('quiz-container');
             container.innerHTML = '';
 
-            const totalPages = Math.ceil(allQuestions.length / itemsPerPage);
+            const totalPages = Math.ceil(allQuestions.length / itemsPerPage) || 1;
             if (currentPage < 1) currentPage = 1;
             if (currentPage > totalPages) currentPage = totalPages;
 
@@ -277,19 +278,19 @@
                 qText.textContent = `Q${item.id || (actualIndex + 1)}. ${item.question}`;
                 mainDiv.appendChild(qText);
 
-                // 영문 보기 영역 (JSON에 english_question 필드가 있을 때 연동)
+                // 영문 보기 영역 (JSON에 english_question 또는 question_en 필드가 있을 때 연동)
                 const englishSection = document.createElement('div');
                 englishSection.className = 'english-section';
                 englishSection.innerHTML = `
                     <div class="english-title">🌐 Original Question (영문 원본)</div>
-                    <div>${item.english_question || item.question}</div>
+                    <div>${item.english_question || item.question_en || item.question}</div>
                 `;
                 mainDiv.appendChild(englishSection);
 
-                // 보기 라디오 버튼 생성 (A, B, C, D)
+                // 보기 라디오 버튼 생성 (A, B, C, D, E 등 데이터에 맞춰 유연하게 처리 가능)
                 const optionsGroup = document.createElement('div');
                 optionsGroup.className = 'options-group';
-                ['A', 'B', 'C', 'D'].forEach(opt => {
+                ['A', 'B', 'C', 'D', 'E'].forEach(opt => {
                     const label = document.createElement('label');
                     label.className = 'option-label';
                     label.innerHTML = `<input type="radio" name="q_${actualIndex}" value="${opt}"> 보기 ${opt}`;
@@ -390,6 +391,7 @@
             renderPage();
         }
 
+        // 초기 데이터 로드 실행
         loadQuestions();
     </script>
 </body>
