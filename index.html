@@ -18,7 +18,7 @@
             padding: 20px; 
             background-color: var(--bg-color); 
             color: var(--text-color);
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
         }
         h1 {
@@ -26,7 +26,7 @@
             color: var(--text-color);
             padding-bottom: 10px;
             border-bottom: 2px solid var(--border-color);
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
         .question-card { 
             background: var(--card-bg); 
@@ -35,13 +35,72 @@
             border-radius: 6px; 
             border: 1px solid var(--border-color);
             box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+        .question-main {
+            flex-grow: 1;
         }
         .question-text { 
-            font-size: 1.1em;
+            font-size: 1.05em;
             font-weight: 600; 
             margin-bottom: 15px; 
             white-space: pre-wrap; 
         }
+        /* 보기 선택 영역 */
+        .options-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .option-label {
+            cursor: pointer;
+            font-size: 0.95em;
+        }
+        /* 우측 메모 영역 토글 버튼 스타일 */
+        .memo-toggle-btn {
+            background: #f1f8ff;
+            border: 1px solid #c8e1ff;
+            color: #0366d6;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            white-space: nowrap;
+            transition: background 0.2s;
+        }
+        .memo-toggle-btn:hover {
+            background: #e1f0ff;
+        }
+        /* 우측 메모 입력창 패널 */
+        .memo-panel {
+            display: none;
+            width: 250px;
+            flex-shrink: 0;
+            border-left: 1px solid var(--border-color);
+            padding-left: 15px;
+        }
+        .memo-panel textarea {
+            width: 100%;
+            height: 120px;
+            resize: vertical;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.9em;
+            box-sizing: border-box;
+        }
+        .memo-label {
+            font-size: 0.85em;
+            font-weight: bold;
+            color: #586069;
+            margin-bottom: 5px;
+            display: block;
+        }
+        /* 정답 및 해설 영역 */
         .answer-section { 
             margin-top: 15px; 
             display: none; 
@@ -54,30 +113,61 @@
             color: #d73a49; 
             font-weight: bold; 
             margin-bottom: 10px; 
-            font-size: 1.1em;
+            font-size: 1.05em;
         }
         .explanation { 
-            color: #24292e; 
+            color: var(--text-color); 
             white-space: pre-wrap; 
+            font-size: 0.95em;
         }
-        .toggle-btn { 
-            padding: 8px 16px; 
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .action-btn { 
+            padding: 6px 12px; 
             background-color: var(--primary-color); 
             color: white; 
             border: none; 
-            border-radius: 6px; 
+            border-radius: 4px; 
             cursor: pointer; 
             font-size: 0.9em;
             font-weight: 500;
-            transition: background-color 0.2s;
         }
-        .toggle-btn:hover { 
+        .action-btn:hover { 
             background-color: #005cc5; 
+        }
+        /* 페이징 네비게이션 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .page-btn {
+            padding: 8px 16px;
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        .page-btn:disabled {
+            background-color: #f1f3f5;
+            color: #adb5bd;
+            cursor: not-allowed;
+        }
+        .page-info {
+            font-weight: 600;
         }
         .loading {
             text-align: center;
             font-weight: bold;
             color: var(--primary-color);
+            padding: 40px;
         }
     </style>
 </head>
@@ -85,87 +175,171 @@
 
     <h1>📘 Databricks 기출문제 160선</h1>
     
+    <!-- 상단 페이징 -->
+    <div id="pagination-top" class="pagination" style="display:none;">
+        <button id="prev-btn-top" class="page-btn" onclick="changePage(-1)">이전</button>
+        <span id="page-info-top" class="page-info">1 / 16</span>
+        <button id="next-btn-top" class="page-btn" onclick="changePage(1)">다음</button>
+    </div>
+
     <!-- 문제가 렌더링될 컨테이너 -->
     <div id="quiz-container">
         <p class="loading">문제를 불러오는 중입니다...</p>
     </div>
 
+    <!-- 하단 페이징 -->
+    <div id="pagination-bottom" class="pagination" style="display:none;">
+        <button id="prev-btn-bottom" class="page-btn" onclick="changePage(-1)">이전</button>
+        <span id="page-info-bottom" class="page-info">1 / 16</span>
+        <button id="next-btn-bottom" class="page-btn" onclick="changePage(1)">다음</button>
+    </div>
+
     <script>
-        // data.json 파일에서 데이터를 불러오는 비동기 함수
+        let allQuestions = [];
+        let currentPage = 1;
+        const itemsPerPage = 10;
+
         async function loadQuestions() {
             const container = document.getElementById('quiz-container');
             try {
-                // fetch를 이용해 동일 경로의 json 파일 호출
                 const response = await fetch('data.json');
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                container.innerHTML = ''; // 로딩 메시지 제거
-
-                // JSON 배열을 순회하며 HTML 요소 생성
-                data.forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = 'question-card';
-
-                    // 1. 문제 텍스트
-                    const qText = document.createElement('div');
-                    qText.className = 'question-text';
-                    qText.textContent = `Q${item.id}. ${item.question}`;
-                    
-                    // 2. 정답 및 해설 토글 버튼
-                    const btn = document.createElement('button');
-                    btn.className = 'toggle-btn';
-                    btn.textContent = '💡 정답 및 해설 보기';
-                    
-                    // 3. 정답 및 해설 영역 (초기 숨김)
-                    const ansSection = document.createElement('div');
-                    ansSection.className = 'answer-section';
-                    
-                    const ansText = document.createElement('div');
-                    ansText.className = 'answer';
-                    ansText.textContent = `정답: ${item.answer}`;
-                    
-                    const expText = document.createElement('div');
-                    expText.className = 'explanation';
-                    expText.textContent = `해설:\n${item.explanation}`;
-                    
-                    ansSection.appendChild(ansText);
-                    ansSection.appendChild(expText);
-
-                    // 4. 버튼 클릭 이벤트
-                    btn.onclick = () => {
-                        if (ansSection.style.display === 'block') {
-                            ansSection.style.display = 'none';
-                            btn.textContent = '💡 정답 및 해설 보기';
-                            btn.style.backgroundColor = 'var(--primary-color)';
-                        } else {
-                            ansSection.style.display = 'block';
-                            btn.textContent = '숨기기';
-                            btn.style.backgroundColor = '#6a737d';
-                        }
-                    };
-
-                    // 카드 조립
-                    card.appendChild(qText);
-                    card.appendChild(btn);
-                    card.appendChild(ansSection);
-                    
-                    // 컨테이너에 카드 추가
-                    container.appendChild(card);
-                });
+                allQuestions = await response.json();
+                renderPage();
             } catch (error) {
                 console.error('데이터 로드 실패:', error);
-                container.innerHTML = 
-                    `<p style="color:#d73a49; text-align:center;"><b>데이터를 불러오지 못했습니다.</b><br>
-                    data.json 파일이 같은 폴더에 있는지 확인해주세요.<br>
-                    에러 메시지: ${error.message}</p>`;
+                container.innerHTML = `<p style="color:#d73a49; text-align:center;"><b>데이터를 불러오지 못했습니다.</b><br>data.json 파일 유무를 확인해주세요.</p>`;
             }
         }
 
-        // 스크립트 로드 시 함수 실행
+        function renderPage() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+
+            const totalPages = Math.ceil(allQuestions.length / itemsPerPage);
+            if (currentPage < 1) currentPage = 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+
+            // 페이징 버튼 및 정보 갱신
+            document.getElementById('pagination-top').style.display = totalPages > 1 ? 'flex' : 'none';
+            document.getElementById('pagination-bottom').style.display = totalPages > 1 ? 'flex' : 'none';
+            
+            const pageInfoStr = `${currentPage} / ${totalPages} 페이지`;
+            document.getElementById('page-info-top').textContent = pageInfoStr;
+            document.getElementById('page-info-bottom').textContent = pageInfoStr;
+
+            document.getElementById('prev-btn-top').disabled = currentPage === 1;
+            document.getElementById('prev-btn-bottom').disabled = currentPage === 1;
+            document.getElementById('next-btn-top').disabled = currentPage === totalPages;
+            document.getElementById('next-btn-bottom').disabled = currentPage === totalPages;
+
+            // 현재 페이지에 해당하는 데이터 슬라이스
+            const startIdx = (currentPage - 1) * itemsPerPage;
+            const currentItems = allQuestions.slice(startIdx, startIdx + itemsPerPage);
+
+            currentItems.forEach((item, index) => {
+                const actualIndex = startIdx + index;
+                const card = document.createElement('div');
+                card.className = 'question-card';
+
+                // 메인 문제 영역
+                const mainDiv = document.createElement('div');
+                mainDiv.className = 'question-main';
+
+                const qText = document.createElement('div');
+                qText.className = 'question-text';
+                qText.textContent = `Q${item.id || (actualIndex + 1)}. ${item.question}`;
+                mainDiv.appendChild(qText);
+
+                // 정답 체크 (라디오 버튼) 영역 생성 (A, B, C, D 보기 자동 생성 예시 혹은 기본 체크박스)
+                const optionsGroup = document.createElement('div');
+                optionsGroup.className = 'options-group';
+                ['A', 'B', 'C', 'D'].forEach(opt => {
+                    const label = document.createElement('label');
+                    label.className = 'option-label';
+                    label.innerHTML = `<input type="radio" name="q_${actualIndex}" value="${opt}"> 보기 ${opt}`;
+                    optionsGroup.appendChild(label);
+                });
+                mainDiv.appendChild(optionsGroup);
+
+                // 버튼 그룹 (해설 보기 & 메모장 토글 버튼)
+                const btnGroup = document.createElement('div');
+                btnGroup.className = 'btn-group';
+
+                const ansBtn = document.createElement('button');
+                ansBtn.className = 'action-btn';
+                ansBtn.textContent = '💡 정답 및 해설 보기';
+
+                const memoToggleBtn = document.createElement('button');
+                memoToggleBtn.className = 'memo-toggle-btn';
+                memoToggleBtn.textContent = '메모 〉';
+
+                btnGroup.appendChild(ansBtn);
+                btnGroup.appendChild(memoToggleBtn);
+                mainDiv.appendChild(btnGroup);
+
+                // 정답 및 해설 숨김 영역
+                const ansSection = document.createElement('div');
+                ansSection.className = 'answer-section';
+                
+                const ansText = document.createElement('div');
+                ansText.className = 'answer';
+                ansText.textContent = `정답: ${item.answer}`;
+                
+                const expText = document.createElement('div');
+                expText.className = 'explanation';
+                expText.textContent = `해설:\n${item.explanation}`;
+                
+                ansSection.appendChild(ansText);
+                ansSection.appendChild(expText);
+                mainDiv.appendChild(ansSection);
+
+                // 해설 버튼 이벤트
+                ansBtn.onclick = () => {
+                    if (ansSection.style.display === 'block') {
+                        ansSection.style.display = 'none';
+                        ansBtn.textContent = '💡 정답 및 해설 보기';
+                    } else {
+                        ansSection.style.display = 'block';
+                        ansBtn.textContent = '숨기기';
+                    }
+                };
+
+                card.appendChild(mainDiv);
+
+                // 우측 메모 입력 패널 생성
+                const memoPanel = document.createElement('div');
+                memoPanel.className = 'memo-panel';
+                memoPanel.innerHTML = `
+                    <span class="memo-label">✏️ 개인 메모장</span>
+                    <textarea placeholder="오답 노트나 메모를 입력하세요..."></textarea>
+                `;
+                card.appendChild(memoPanel);
+
+                // 우측 메모 토글 버튼 이벤트 ('>' 또는 '<' 전환)
+                memoToggleBtn.onclick = () => {
+                    if (memoPanel.style.display === 'block') {
+                        memoPanel.style.display = 'none';
+                        memoToggleBtn.textContent = '메모 〉';
+                    } else {
+                        memoPanel.style.display = 'block';
+                        memoToggleBtn.textContent = '〈 닫기';
+                    }
+                };
+
+                container.appendChild(card);
+            });
+
+            // 페이지 변경 시 화면 맨 위로 부드럽게 스크롤
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function changePage(direction) {
+            currentPage += direction;
+            renderPage();
+        }
+
         loadQuestions();
     </script>
 </body>
