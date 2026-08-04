@@ -1,0 +1,962 @@
+[
+  {
+    "id": 1,
+    "question": "A data engineer wants to create a relational object by pulling data from two tables. The relational object does not need to be used by other data engineers in other sessions. In order to save on storage costs, the data engineer wants to avoid copying and storing physical data. \nWhich of the following relational objects should the data engineer create?\n\nA. Spark SQL Table\nB. View\nC. Database\nD. Temporary view\nE. Delta Table",
+    "answer": "D",
+    "explanation": "Temporary View는 Session 동안에만 존재하는 가상의 테이블\n데이터를 저장하지 않고 Python 변수에 담긴 Dataframe을 SQL Query로 조회할 수 있도록 함\nCluster 재시작 시 사라짐"
+  },
+  {
+    "id": 2,
+    "question": "Which of the following Git operations must be performed outside of Databricks Repos?\n\nA. Commit\nB. Pull\nC. Push\nD. Clone\nE. Merge",
+    "answer": "E",
+    "explanation": "Merge는 Databricks Git Repos UI에서 지원하지 않음\n(Git Platform에서 수행)"
+  },
+  {
+    "id": 3,
+    "question": "Which TWO items are characteristics of the Gold Layer?\n(Choose 2 answers)\n\nA. Read-optimized\nB. Normalised\nC. Raw Data\nD. Historical lineage\nE. De-normalised",
+    "answer": "A,E",
+    "explanation": "Gold Layer는 비즈니스 목적에 맞게 가공된 데이터 레이어\n즉 BI, AI, ML 등에서 사용하기 위해 집계, 정제된 데이터로서 \n이미 목적에 맞게 작성된 데이터를 바로 사용하도록 함\n\n따라서 집계 테이블, 데이터 마트, 등 빠르게 읽을 수 있도록 설계된\n읽기 최적화와 분석 쿼리 성능을 위한 조인 최소화등으로 비정규화가 답"
+  },
+  {
+    "id": 4,
+    "question": "A data engineer is maintaining a data pipeline. Upon data ingestion, the data engineer notices that the source data is starting to have a lower level of quality. The data engineer would like to automate the process of monitoring the quality level.\nWhich of the following tools can the data engineer use to solve this problem?\n\nA. Unity Catalog\nB. Data Explorer\nC. Delta Lake\nD. Delta Live Tables\nE. Auto Loader",
+    "answer": "D",
+    "explanation": "Delta Live Tables (DLT)는 Databricks Pipeline의 또 다른 이름으로서\n데이터 수집부터 비즈니스 목적에 맞는 가공까지 메달리온 아키텍처 과정을\n프로세스화 하기 위한 도구"
+  },
+  {
+    "id": 5,
+    "question": "A data engineer has configured a Structured Streaming job to read from a table, manipulate the data, and then perform a streaming write into a new table. The code block used by the data engineer is below:\n(spark.readStream\n .table(\"sales\")\n .withColumn(\"avg_price\"), col(\"sales\") / col(\"unit\"))\n .writeStream\n .option(\"checkpointLocation\", checkpointPath)\n .outputMode(\"complete\")\n ._______________________\n .table(\"new_sales\")\n)\nIf the data engineer only wants the query to process all of the available data in as many\nbatches as required, which of the following lines of code should the data engineer use to fill in\nthe blank?\nA. processingTime(1)\nB. trigger(availableNow=True)\nC. trigger(parallelBatch=True)\nD. trigger(processingTime=\"once\")\nE. trigger(continuous=\"once\")",
+    "answer": "B",
+    "explanation": "일정 간격으로 배치 실행\nprocessingTime=\"Batch Time\"\n\n이번 배치 때 유입된 데이터만 처리 후 종료\nonce=T/F\n\n현존하는 모든 데이터 처리 후 종료\navailableNew=T/F\n\n마이크로 배치 지속적인 처리\nContinuous=\"checkpoint Commit\""
+  },
+  {
+    "id": 6,
+    "question": "A data engineer has configured a Structured Streaming job to read from a table, manipulate\nthe data, and then perform a streaming write into a new table.\n\n(spark.readStream\n .table(\"sales\")\n .withColumn(\"avg_price\"), col(\"sales\") / col(\"unit\"))\n .writeStream\n .option(\"checkpointLocation\", checkpointPath)\n .outputMode(\"complete\")\n ._______________________\n .table(\"new_sales\")\n)\n\nThe code block used by the data engineer is below:\nWhich line of code should the data engineer use to fill in the blank if the data engineer only\nwants the query to execute a micro-batch to process data every 5 seconds?\n\nA. trigger(\"5 seconds\")\nB. trigger(continuous=\"5 seconds\")\nC. trigger(once=\"5 seconds\")\nD. trigger(processingTime=\"5 seconds\")",
+    "answer": "D",
+    "explanation": "일정 간격으로 배치 실행\nprocessingTime=\"Batch Time\"\n\n이번 배치 때 유입된 데이터만 처리 후 종료\nonce=T/F\n\n현존하는 모든 데이터 처리 후 종료\navailableNew=T/F\n\n마이크로 배치 지속적인 처리\nContinuous=\"checkpoint Commit\""
+  },
+  {
+    "id": 7,
+    "question": "A data engineer needs to apply custom logic to identify employees with more than 5 years of experience in array column employees in table stores. The custom logic should create a new column exp_employees that is an array of all of the employees with more than 5 years of experience for each row. In order to apply this custom logic at scale, the data engineer wants to use the FILTER higher-order function.\nWhich of the following code blocks successfully completes this task?\n\nA. SELECT store_id, employees, FILTER(employees, i -> i.years_exp > 5) AS exp_employees\n    FROM stores;\nB. SELECT store_id, employees, FILTER(exp_employees, years_exp > 5) AS exp_employees\n    FROM stores;\nC. SELECT store_id, employees, FILTER(employees, years_exp > 5) AS exp_employees\n    FROM stores;\nD. SELECT store_id, employees, \n        CASE WHEN employees.years_exp > 5 THEN employees ELSE NULL\n        END AS exp_employees\n    FROM stores;\nE. SELECT store_id, employees, FILTER(exp_employees, i -> i.years_exp > 5) AS exp_employees\n    FROM stores;\n\nA. Option A\nB. Option B\nC. Option C\nD. Option D\nE. Option E",
+    "answer": "A",
+    "explanation": "Databricks의 Spark SQL에서 Array 컬럼을 조건으로 필터링 시 Filter 함수를 사용\nFILTER(Array컬럼명, 임시변수 -> 조건)\n※ FILTER(col_namem, element -> condition)"
+  },
+  {
+    "id": 8,
+    "question": "What Databricks feature can be used to check the data sources and tables used in a workspace?\n\nA. Do not use the lineage feature as it only tracks activity from the last 3 months and will not provide full details on dependencies.\nB. Use the lineage feature to visualize a graph that highlights where the table is used only in notebooks,\nC. Use the lineage feature to visualize a graph that highlights where the table is used only in reports.\nD. Use the lineage feature to visualize a graph that shows all dependencies, including where \\the table is used in notebooks, other tables, and reports.",
+    "answer": "D",
+    "explanation": "Unitiy Catalog에서 그래프를 통해 모든 \n의존성을 시각화 할 수 있다"
+  },
+  {
+    "id": 9,
+    "question": "Which of the following statements regarding the relationship between Silver tables and Bronze tables is always true?\n\nA. Silver tables contain a less refined, less clean view of data than Bronze data.\nB. Silver tables contain aggregates while Bronze data is unaggregated.\nC. Silver tables contain more data than Bronze tables.\nD. Silver tables contain a more refined and cleaner view of data than Bronze tables.\nE. Silver tables contain less data than Bronze tables.",
+    "answer": "D",
+    "explanation": "Bronze Layer는 Raw 데이터 그 차제를 저장하며,\nSilver는 Bronze Layer를 정제 (Cleanning)한 데이터 Layer를 의미한다"
+  },
+  {
+    "id": 10,
+    "question": "A data engineer is designing an ETL pipeline to process both streaming and batch data from multiple sources The pipeline must ensure data quality, handle schema evolution, and provide easy maintenance. The team is considering using Delta Live Tables (DLT) in Databricks to achieve these goals. They want to understand the key features and benefits of DLT that make it suitable for this use case.\nWhy is Delta Live Tables (DLT) an appropriate choice?\n\nA. Automatic data quality checks, built-in support for schema evolution, and declarative pipeline development\nB. Manual schema enforcement, high operational overhead, and limited scalability\nC. Requires custom code for data quality checks, no support for streaming data, and complex pipeline maintenance\nD. Supports only batch processing, no data versioning, and high infrastructure costs",
+    "answer": "A",
+    "explanation": "노트북에서는 사용할 수 없는 선언형 데코레이터 (@)가 사용가능하며,\n @dlt.table\n @dlt.expect\n등을 통해 규칙만 선언하고 복잡한 dependaency, retry, 등을 자동으로 처리"
+  },
+  {
+    "id": 11,
+    "question": "A data engineer has been provided a PySpark DataFrame named df with columns product and revenue. The data engineer needs to compute complex aggregations to determine each product's total revenue, average revenue, and transaction count.\nWhich code snippet should the data engineer use?\n\nA. from pyspark.sql import function as F\n   aggregated_df = df.groupBy(\"product\").agg(F.sum(\"revenue\").alias(\"total_revenue\"), \n                          F.avg(\"revenue\").alias(\"avg_revenue\"),\n                          F.count(\"*\").alias(\"transaction_count\"))\nB. aggreaged_df = df.groupBy(\"product\").agg(\"F.sum(\"revenue\").alias(\"total_revenue\"), \n                          F.avg(\"revenue\").alias(\"avg_revenue\"), \n                          F.count(\"*\").alias(\"transaction_count\"))\nC. aggregated_df = df.groupby(\"product\").agg(\n   \"sum(revenue)\",\n   \"avg(revenue)\",   \n   \"count(revenue)\"\n)\nD. aggregated_df = df.groupby(\"product\").agg({\"revenue\": \"sum\", \"revenue\": \"avg\", \"revenue\": \"count\"})",
+    "answer": "A",
+    "explanation": "문법은 아래와 같다\n\ngroupBy( )\n    .agg( \n          .sum(\" \").alias(\" \"),\n          .avg(\" \").alias(\" \"),\n          .count(\" \").alias(\" \")\n     )\n\nB는 .agg() 내부의 \" \" 위치가 잘못 됨"
+  },
+  {
+    "id": 12,
+    "question": "Which of the following is stored in the Databricks customer's cloud account?\n\nA. Databricks web application\nB. Cluster management metadata\nC. Repos\nD. Data\nE. Notebooks",
+    "answer": "D",
+    "explanation": "데이터브릭스는 데이터를 저장하지 않음\n고객 클라우드 계정 -> AWS, AZURE, GCP 등"
+  },
+  {
+    "id": 13,
+    "question": "A Python file is ready to go into production and the client wants to use the cheapest but most\nefficient type of cluster possible. The workload is quite small, only processing 10GBs of data\nwith only simple joins and no complex aggregations or wide transformations.\nWhich cluster meets the requirement?\n\nA. Job cluster with Photon enabled\nB. Interactive cluster\nC. Job cluster with spot instances disabled\nD. Job cluster with spot instances enabled",
+    "answer": "D",
+    "explanation": "Spot 인스턴스란 클라우드 제공업체가 사용되지 않고 남은 컴퓨팅 자원을\n매우 저렴한 가격에 제공하는 서비스\n단, 클라우드 업체에서 자원이 다시 필요해지는 경우 언제든 회수 할 수 있음"
+  },
+  {
+    "id": 14,
+    "question": "A data engineer needs access to a table new_uable, but they do not have the correct\npermissions. They can ask the table owner for permission, but they do not know who the\ntable owner is.\nWhich approach can be used to identify the owner of new_table?\n\nA. There is no way to identify the owner of the table\nB. Review the Owner field in the table's page in the cloud storage solution\nC. Review the Permissions tab in the table's page in Data Explorer\nD. Review the Owner field in the table's page in Data Explorer",
+    "answer": "D",
+    "explanation": "Data Explorer는 Unity Catalog의 이전 명칭으로 데이터 자산의 모든 \n정보를 확인할 수 있다"
+  },
+  {
+    "id": 15,
+    "question": "Which of the following code blocks will remove the rows where the value in column age is\ngreater than 25 from the existing Delta table my_table and save the updated table?\n\nA. SELECT * FROM my_table WHERE age > 25;\nB. UPDATE my_table WHERE age > 25;\nC. DELETE FROM my_table WHERE age > 25;\nD. UPDATE my_table WHERE age <= 25;\nE. DELETE FROM my_table WHERE age <= 25;",
+    "answer": "C",
+    "explanation": "SQL 기본 문제로 \nDELETE FROM <TABLE> WHERE <Condition>"
+  },
+  {
+    "id": 16,
+    "question": "What is the structure of an Asset Bundle?\n\nA. A single plain text file enumerating the names of assets to be migrated to a new\nworkspace.\nB. A compressed archive (ZIP) that solely contains workspace assets without any\naccompanying metadata.\nC. A YAML configuration file that specifies the artifacts, resources, and configurations for the\nproject.\nD. A Docker image containing runtime environments and the source code of the assets",
+    "answer": "C",
+    "explanation": "Asset Bundle은 Bundle, 즉 패키지를 의미하며, 데이터 프로젝트를 하나의 \n패키지로 묶어서 관리하는 도구\nDatabricks에서는 YAML로 관리"
+  },
+  {
+    "id": 17,
+    "question": "Calculate the total sales amount for each region and store the results in a new dataframe\ncalled region_sales.\nGiven the expected result:\n\n\n\n\n\n\nWhich code will generate the expected result?\n\nA. region_sales =\nsales_df.groupBy(\"region\").agg(sum(\"sales_amount).alias(\"total_sales_amount\"))\nB. region_sales = sales_df. sum (\"sales_amount\").groupBy(\"region\").alias\n(\"total_sales_amount\")\nC. region_sales=\nsales_df.groupBy(\"category\").sum(nsales_amount\").alias(\"total_sales_amount\")\nD. region sales - sales_df.agg(sum(\"sales_amount\").groupBy(\"region\").alias(\"total sales\namount\"))",
+    "answer": "A",
+    "explanation": "문법은 아래와 같다\n\ngroupBy( )\n    .agg( \n          .sum(\" \").alias(\" \"),\n          .avg(\" \").alias(\" \"),\n          .count(\" \").alias(\" \")\n     )\n\n문제의 경우 Region 별로 집계되어 \ngroupBy(\"region\").agg( …)형태로 작성한다"
+  },
+  {
+    "id": 18,
+    "question": "A data analyst has a series of queries in a SQL program. The data analyst wants this\nprogram to run every day. They only want the final query in the program to run on Sundays.\nThey ask for help from the data engineering team to complete this task.\nWhich of the following approaches could be used by the data engineering team to complete\nthis task?\n\nA. They could submit a feature request with Databricks to add this functionality.\nB. They could wrap the queries using PySpark and use Python's control flow system to\ndetermine when to run the final query.\nC. They could only run the entire program on Sundays.\nD. They could automatically restrict access to the source table in the final query so that it is\nonly accessible on Sundays.\nE. They could redesign the data model to separate the data used in the final query into a new\ntable.",
+    "answer": "B",
+    "explanation": "실행 쿼리\nif datetime.now().weekend() == 6:\n    spark.sql(\" SQL Query\")\nelse…\n\nC,D 는 매일 실행할 수 없는 문제 발생\nE는 모델 재설계는 과한 작업"
+  },
+  {
+    "id": 19,
+    "question": "In order for Structured Streaming to reliably track the exact progress of the processing so that\nit can handle any kind of failure by restarting and/or reprocessing, which of the following two\napproaches is used by Spark to record the offset range of the data being processed in each\ntrigger?\n\nA. Checkpointing and Write-ahead Logs\nB. Structured Streaming cannot record the offset range of the data being processed in each\ntrigger.\nC. Replayable Sources and Idempotent Sinks\nD. Write-ahead Logs and Idempotent Sinks\nE. Checkpointing and Idempotent Sinks",
+    "answer": "A",
+    "explanation": "Checkpoint는 스트리밍 배치에 대한 Commit을 저장하고 \n실행되는 단계를 저장하여 오류 발생 시 가장 마지막 된 Commit에서 \n재 실행할 수 있도록 합니다.\n\n즉, 저장 포인트 역할을 하며, Offeset (읽은 위치 정보)와 Commot로그를 관리 기록\nWrite-ahead-log는 말 그대로 작업 실행 전 기록하는 로그"
+  },
+  {
+    "id": 20,
+    "question": "A data engineer has left the organization. The data team needs to transfer ownership of the\ndata engineer's Delta tables to a new data engineer. The new data engineer is the lead\nengineer on the data team.\nAssuming the original data engineer no longer has access, which of the following individuals\nmust be the one to transfer ownership of the Delta tables in Data Explorer?\n\nA. Databricks account representative\nB. This transfer is not possible\nC. Workspace administrator\nD. New lead data engineer\nE. Original data engineer",
+    "answer": "C",
+    "explanation": "Delta Table의 소유권은 소유자 또는 그 상위 관리자 (Workspace)가 \n변경할 수 있으며, Workspace는 작업단위 최상위 관리자"
+  },
+  {
+    "id": 21,
+    "question": "A data engineer is using the following code block as part of a batch ingestion pipeline to read from a composable table:\ntransactions_df = (spark.read\n       .schema(schema)\n       .format(\"delta\")\n       .table(\"transactions\")\n)\nWhich of the following changes needs to be made so this code block will work when the\ntransactions table is a stream source?\n\nA. Replace predict with a stream-friendly prediction function\nB. Replace schema(schema) with option (\"maxFilesPerTrigger\", 1)\nC. Replace \"transactions\" with the path to the location of the Delta table\nD. Replace format(\"delta\") with format(\"stream\")\nE. Replace spark.read with spark.readStream",
+    "answer": "E",
+    "explanation": "일반 테이블을 읽을 때는 spark.read .. 를 사용하며,\n스트리밍은 spark.readStream을 사용한다"
+  },
+  {
+    "id": 22,
+    "question": "Which of the following describes the type of workloads that are always compatible with Auto\nLoader?\n\nA. Dashboard workloads\nB. Streaming workloads\nC. Machine learning workloads\nD. Serverless workloads\nE. Batch workloads",
+    "answer": "B",
+    "explanation": "Auto Load는 Stream에서 사용이 가능하며,\n.format(\"cloudFiles\")로 사용한다."
+  },
+  {
+    "id": 23,
+    "question": "A single Job runs two notebooks as two separate tasks. A data engineer has noticed that one\nof the notebooks is running slowly in the Job's current run. The data engineer asks a tech\nlead for help in identifying why this might be the case.\nWhich of the following approaches can the tech lead use to identify why the notebook is\nrunning slowly as part of the Job?\n\nA. They can navigate to the Runs tab in the Jobs UI to immediately review the processing\nnotebook.\nB. They can navigate to the Tasks tab in the Jobs UI and click on the active run to review the\nprocessing notebook.\nC. They can navigate to the Runs tab in the Jobs UI and click on the active run to review the\nprocessing notebook.\nD. There is no way to determine why a Job task is running slowly.\nE. They can navigate to the Tasks tab in the Jobs UI to immediately review the processing\nnotebook.",
+    "answer": "C",
+    "explanation": "Job Runs 탭은 각 태스크들의 작업 시간이 얼마나 걸리는지, \n어디에서 오류가 났는지, 등을 시각적으로 확인할 수 있습니다.\n또한 각 테스크를 클릭하여 세부 정보를 확인할 수 있습니다.\nTasks탭은 Task를 구성하는 공간입니다"
+  },
+  {
+    "id": 24,
+    "question": "A data engineer runs a statement every day to copy the previous day's sales into the table\ntransactions. Each day's sales are in their own file in the location \"/transactions/raw\".\nToday, the data engineer runs the following command to complete this task:\nCOPY INTO transactions\nFROM \"/transactions/raw\"\nFILEFORMAT = PARQUET;\nAfter running the command today, the data engineer notices that the number of records in\ntable transactions has not changed.\nWhich of the following describes why the statement might not have copied any new records\ninto the table?\n\nA. The format of the files to be copied were not included with the FORMAT_OPTIONS\nkeyword.\nB. The names of the files to be copied were not included with the FILES keyword.\nC. The previous day's file has already been copied into the table.\nD. The PARQUET file format does not support COPY INTO.\nE. The COPY INTO statement requires the table to be refreshed to view the copied rows.",
+    "answer": "C",
+    "explanation": "COPY INTO 는 이미 로드된 파일을 다시 읽지 않음\n(Streaming의 Auto Loader와 동일한 메커니즘)\n파일을 성공적으로 가져온 경우 메타데이터 (로깅)을 남김\n\n동일한 경로인 경우 기록된 파일 이름 및 수정 시간을 대조하여 \n새로운 파일만 읽음"
+  },
+  {
+    "id": 25,
+    "question": "Which of the following must be specified when creating a new Delta Live Tables pipeline?\n\nA. A key-value pair configuration\nB. The preferred DBU/hour cost\nC. A path to cloud storage location for the written data\nD. A location of a target database for the written data\nE. At least one notebook library to be executed",
+    "answer": "E",
+    "explanation": "파이프라인은 \"노트북\"을 기반으로 작업을 수행\n노트북에 있는 코드를 읽고 작업을 결정"
+  },
+  {
+    "id": 26,
+    "question": "A data engineer has developed a data pipeline to ingest data from a JSON source using Auto\nLoader, but the engineer has not provided any type inference or schema hints in their\npipeline. Upon reviewing the data, the data engineer has noticed that all of the columns in the\ntarget table are of the string type despite some of the fields only including float or boolean\nvalues.\nWhich of the following describes why Auto Loader inferred all of the columns to be of the\nstring type?\n\nA. There was a type mismatch between the specific schema and the inferred schema\nB. JSON data is a text-based format\nC. Auto Loader only works with string data\nD. All of the fields had at least one null value\nE. Auto Loader cannot infer the schema of ingested data",
+    "answer": "B",
+    "explanation": "JSON은 Text기반 포멧이며, 스키마 추론 (inferSchema)는 데이터를 보고 \n데이터 타입을 추론합니다\n하지만 스키마 추론 및 힌트를 제공하지 않았기 때문에 Auto Loader는\n텍스트로 판단\n\n스키마 추론:\n.option(\"cloudFiles.inferColumnTypes\", \"true\")"
+  },
+  {
+    "id": 27,
+    "question": "Which of the following describes the storage organization of a Delta table?\n\nA. Delta tables are stored in a single file that contains data, history, metadata, and other\nattributes.\nB. Delta tables store their data in a single file and all metadata in a collection of files in a\nseparate location.\nC. Delta tables are stored in a collection of files that contain data, history, metadata, and\nother attributes.\nD. Delta tables are stored in a collection of files that contain only the data stored within the\ntable.\nE. Delta tables are stored in a single file that contains only the data stored within the table.",
+    "answer": "C",
+    "explanation": "Delta Table은 실제 데이터를 가지고 있는 Parquet 파일과 \n메타데이터, 이력, 등을 포함한 json으로 구성된 \"스토리지 포멧\"이다"
+  },
+  {
+    "id": 28,
+    "question": "In which of the following scenarios should a data engineer select a Task in the Depends On\nfield of a new Databricks Job Task?\n\nA. When another task needs to be replaced by the new task\nB. When another task needs to fail before the new task begins\nC. When another task has the same dependency libraries as the new task\nD. When another task needs to use as little compute resources as possible\nE. When another task needs to successfully complete before the new task begins",
+    "answer": "E",
+    "explanation": "Job Dependancy는 의존성으로 여러 테스크가 있을 때 \n테스크의 순서를 설정하는 역할을 합니다"
+  },
+  {
+    "id": 29,
+    "question": "Which tool is used by Auto Loader to process data incrementally?\n\nA. Spark Structured Streaming\nB. Unity Catalog\nC. Checkpointing\nD. Databricks SQL",
+    "answer": "A",
+    "explanation": "Auto Load는 Stream에서 사용이 가능한 기능이다"
+  },
+  {
+    "id": 30,
+    "question": "A data engineering team is using Kafka to capture event data and then ingest it into\nDatabricks. The team wants to be able to see these historical events. Medallion architecture\nis already in place. The team wants to be mindful of costs.\nWhere should this historical event data be stored?\n\nA. Gold\nB. Silver\nC. Bronze\nD. Raw layer",
+    "answer": "C",
+    "explanation": "Bronze Layer는 Raw 데이터 자체를 저장하는 공간이며,\nRaw 데이터의 변경이 발생에 따른 기록을 작성하기 때문에 \nBronze에 이벤트 데이터를 저장하는 것이 올바른 선택\n\n향후 비즈니스 로직이 변경되더라도 Bronze 원본 이력을 보고 \n데이터 재처리 등이 가능하며, 로직이 들어가지 않은 원시 상태로\n비용 (컴퓨팅 리소스)가 적게 들며, Delta 형태로 압축되어 효율적"
+  },
+  {
+    "id": 31,
+    "question": "A data engineer and data analyst are working together on a data pipeline. The data engineer\nis working on the raw, bronze, and silver layers of the pipeline using Python, and the data\nanalyst is working on the gold layer of the pipeline using SQL The raw source of the pipeline\nis a streaming input. They now want to migrate their pipeline to use Delta Live Tables.\nWhich change will need to be made to the pipeline when migrating to Delta Live Tables?\n\nA. The pipeline can have different notebook sources in SQL & Python.\nB. The pipeline will need to be written entirely in SQL.\nC. The pipeline will need to be written entirely in Python.\nD. The pipeline will need to use a batch source in place of a streaming source.",
+    "answer": "A",
+    "explanation": "파이프라인은 노트북을 기반으로 사용하며, 여러 개의 노트북을 \n하나의 파이프라인에 실행할 수 있는 기능\nDLT (Piepline)은 언어가 다르더라도 테이블만 동일하다면 서로를 참조할 \n수 있도록 연결합니다"
+  },
+  {
+    "id": 32,
+    "question": "Which SQL keyword can be used to convert a table from a long format to a wide format?\n\nA. TRANSFORM\nB. PIVOT\nC. SUM\nD. CONVERT",
+    "answer": "B",
+    "explanation": "SQL 기본"
+  },
+  {
+    "id": 33,
+    "question": "A data engineer is designing a data pipeline. The source system generates files in a shared\ndirectory that is also used by other processes. As a result, the files should be kept as is and\nwill accumulate in the directory.\nThe data engineer needs to identify which files are new since the previous run in the pipeline,\nand set up the pipeline to only ingest those new files with each run.\nWhich of the following tools can the data engineer use to solve this problem?\n\nA. Unity Catalog\nB. Delta Lake\nC. Databricks SQL\nD. Data Explorer\nE. Auto Loader",
+    "answer": "E",
+    "explanation": "Auto Loader는 자동으로 폴더에 생성되는 새로운 데이터를 읽어오는\n기능입니다"
+  },
+  {
+    "id": 34,
+    "question": "A data engineer wants to create a new table containing the names of customers that live in\nFrance.\nThey have written the following command:\nCREATE TABLE customersInFrance\n_____ AS\nSELECT id,\n         firstName,\n         lastName,\nFROM customerLocations\nWHERE country = 'FRANCE';\nA senior data engineer mentions that it is organization policy to include a table property\nindicating that the new table includes personally identifiable information (PII).\nWhich of the following lines of code fills in the above blank to successfully complete the task?\n\nA. There is no way to indicate whether a table contains PII.\nB. \"COMMENT PII\"\nC. TBLPROPERTIES PII\nD. COMMENT \"Contains PII\"\nE. PII",
+    "answer": "C",
+    "explanation": "PDF와 답변 상이하며, 정답은 C\nTBLPROPERTIES : 테이블 속성 추가할 때 사용\n\nCOMMENT : 설명\n\n※ D 보기는 문법 오류. 정확한 정답 : TBLPROPERTIES ('PII' = 'true')\n\n데이터브릭스 SQL 문법에서 CREATE TABLE AS SELECT (CTAS) 문을 사용할 때, \n테이블에 대한 설명이나 속성을 추가하는 가장 방법 중 하나는 \nCOMMENT 키워드를 사용하는 것\n\n조직 정책상 PII 포함 여부를 표시해야 하므로, \"Contains PII\"라는 문자열을 코멘트로 달아주는 것이 적절"
+  },
+  {
+    "id": 35,
+    "question": "Which of the following commands will return the location of database customer360?\n\nA. DESCRIBE LOCATION customer360;\nB. DROP DATABASE customer360;\nC. DESCRIBE DATABASE customer360;\nD. ALTER DATABASE customer360 SET DBPROPERTIES ('location' = '/user'};\nE. USE DATABASE customer360;",
+    "answer": "C",
+    "explanation": "저장 위치 반환\nDESCRIBE DATABASE"
+  },
+  {
+    "id": 36,
+    "question": "Which of the following benefits is provided by the array functions from Spark SQL?\n\nA. An ability to work with data in a variety of types at once\nB. An ability to work with data within certain partitions and windows\nC. An ability to work with time-related data in specified intervals\nD. An ability to work with complex, nested data ingested from JSON files\nE. An ability to work with an array of tables for procedural automation",
+    "answer": "D",
+    "explanation": "JSON 데이터는 리스트나 중첩 구조를 띄는 경우가 많으며, \n이 경우 SQL array 함수 \"explode, array_contains 등을 사용하여 \n복잡한 구조의 데이터를 풀거나 특정 요소만 추출하는 것이 가능"
+  },
+  {
+    "id": 37,
+    "question": "Which of the following describes when to use the CREATE STREAMING LIVE TABLE\n(formerly CREATE INCREMENTAL LIVE TABLE) syntax over the CREATE LIVE TABLE\nsyntax when creating Delta Live Tables (DLT) tables using SQL?\n\nA. CREATE STREAMING LIVE TABLE should be used when the subsequent step in the DLT pipeline is static.\nB. CREATE STREAMING LIVE TABLE should be used when data needs to be processed incrementally.\nC. CREATE STREAMING LIVE TABLE is redundant for DLT and it does not need to be used.\nD. CREATE STREAMING LIVE TABLE should be used when data needs to be processed through complicated aggregations.\nE. CREATE STREAMING LIVE TABLE should be used when the previous step in the DLT pipeline is static.",
+    "answer": "B",
+    "explanation": "Streaming Live Table = 증분 방식\nLive Table = 소스 전체를 읽어 결과를 덮어쓰는 방식 (MV와 유사)\n\nMV: Materialized View"
+  },
+  {
+    "id": 38,
+    "question": "A data engineer wants to delegate day-to-day permission management for the schema\nmain.marketing to the mkt-admins group, without making them workspace admins. They\nshould be able to grant and revoke privileges for other users on objects within that schema.\nWhich approach aligns with Unity Catalog's ownership and privilege model?\n\nA. Transfer ownership of the schema main.marketing to mkt-admins; owners can manage privileges on the schema and its contained objects.\nB. Grant MANAGE permissions on the metastore to mkt-admins, which allows managing privileges for all schemas and tables globally.\nC. Grant USE SCHEMA on main.marketing, and MODIFY on all tables to mkt-admins, which enables the management of grants within the schema.\nD. Make mkt-admins a workspace-level admins group, then assign SELECT on main.marketing to allow privilege delegation.",
+    "answer": "A",
+    "explanation": "Catalog -> Schema -> Table의 Depth로 구성되어 있으며,\nSchema의 권한을 부여하면 하위 객체들에 대한 권한을 보유 할 수 있다"
+  },
+  {
+    "id": 39,
+    "question": "A data engineer is building a nightly batch ETL pipeline that processes very large volumes of\nraw JSON logs from a data lake into Delta tables for reporting. The data arrives in bulk once\nper day, and the pipeline takes several hours to complete. Cost efficiency is important, but\nperformance and reliable completion of the pipeline are the highest priorities.\nWhich type of Databricks cluster should the data engineer configure?\n\nA. A job cluster configured to autoscale across multiple workers during the pipeline run\nB. A lightweight single-node cluster with a low worker node count to reduce costs\nC. A high-concurrency cluster designed for interactive SQL workloads\nD. An all-purpose cluster that always runs to ensure low-latency job startup times",
+    "answer": "A",
+    "explanation": "Job cluster : 작업 실행 시에만 생성 → 끝나면 종료 (비용 효율)\nAuto Scale :  작업량과 필요에 따라 Worker들의 수를 자동으로 설정"
+  },
+  {
+    "id": 40,
+    "question": "A data engineer is working on a Databricks project that utilizes cloud storage. The data\nengineer wants to load several json files from containers on a storage account as soon as the\nfile arrives within the storage account.\nWhich syntax should the data engineer follow to first load the files into a dataframe and check\nthat it is working as expected using Python?\n\nA. df = spark.readStream.format(\"json\").load(\"input/path\")\nB. df = spark.readStream.format(\"cloud\"),option(\"json\").load(\"/input/path\")\nC. df = spark.readStream.format(\"cloudFiles\").option(\"cloudFiles.format\", \"json\").load(\"/input/path\")\nD. df = spark.read.json(\"inp i./path\")",
+    "answer": "C",
+    "explanation": "도착하자마자 즉시 로드하는 방식은 Auto Loader를 의미하며,\nAuto Loader는 format(\"cloudFiles\").option(\"cloudFiles.format\", )로 작성한다"
+  },
+  {
+    "id": 41,
+    "question": "An engineering manager uses a Databricks SQL query to monitor ingestion latency for each\ndata source. The manager checks the results of the query every day, but they are manually\nrerunning the query each day and waiting for the results.\nWhich of the following approaches can the manager use to ensure the results of the query\nare updated each day?\n\nA. They can schedule the query to refresh every 1 day from the SQL endpoint's page in Databricks SQL.\nB. They can schedule the query to refresh every 12 hours from the SQL endpoint's page in Databricks SQL.\nC. They can schedule the query to refresh every 1 day from the query's page in Databricks SQL.\nD. They can schedule the query to run every 1 day from the Jobs UI.\nE. They can schedule the query to run every 12 hours from the Jobs UI.",
+    "answer": "C",
+    "explanation": "Query Page는 SQL Editor를 의미하며 해당 페이지의 Schedule 기능을 이용"
+  },
+  {
+    "id": 42,
+    "question": "A data engineer needs to combine sales data from an on-premises PostgreSQL database\nwith customer data in Azure Synapse for a comprehensive report. The goal is to avoid data\nduplication and ensure up-to-date information How should the data engineer achieve this\nusing Databricks?\n\nA. Develop custom ETL pipelines to ingest data into Databricks\nB. Use Lakehouse Federation to query both data sources directly\nC. Manually synchronize data from both sources into a single database\nD. Export data from both sources to CSV files and upload them to Databricks",
+    "answer": "B",
+    "explanation": "레이크하우스 페더레이션은 데이터를 직접 옮기지 않고 외부 데이터베이스를 \n데이터브릭스 내부 테이블처럼 쿼리할 수 있게 해주는 기능\n\nCatalog > External Data > Connection에서 수행이 가능하며,\n코드를 통해서도 가능"
+  },
+  {
+    "id": 43,
+    "question": "What is the functionality of AutoLoader in Databricks?\n\nA. Auto Loader automatically ingests and processes new files from cloud storage, handling\nbatch data with support for schema evolution.\nB. Auto Loader automatically ingests and processes new files from cloud storage, handling\nonly streaming data with no support for schema evolution.\nC. Auto Loader automatically ingests and processes new files from cloud storage, handling batch and streaming data with no support for schema evolution. \nD. Auto Loader automatically ingests and processes new files from cloud storage, handling\nboth batch and streaming data with support for schema evolution.",
+    "answer": "D",
+    "explanation": "Auto Loader는 자동으로 폴더에 생성되는 새로운 데이터를 읽어오는\n기능입니다\n배치 (일회성 스트리밍)와 스트리밍 모두 가능하며, 스키마 진화를 지원합니다.\n배치와 스트리밍은 .trigger 옵션을 통해 설정합니다."
+  },
+  {
+    "id": 44,
+    "question": "A data engineer needs to create a table in Databricks using data from their organization's\nexisting SQLite database. They run the following command:\nCREATE TABLE jdbc_customer360\nUSING ________\nOPTIONS (\nurl \"jdbc:sqlite:/customers.db\", dbtable \"customer360\"\n)\nWhich line of code fills in the above blank to successfully complete the task?\n\nA. autoloader\nB. org.apache.spark.sql.jdbc\nC. sqlite\nD. org.apache.spark.sql.sqlite",
+    "answer": "B",
+    "explanation": "USING에 데이터 타입 (e.g. DELTA, CSV, 등)이 들어가며, \nJDBC 또는 org.apache.spark.sql.jdb와 같이 전체 경로가 들어갑니다"
+  },
+  {
+    "id": 45,
+    "question": "Which method should a Data Engineer apply to ensure Workflows are being triggered on schedule?\n\nA. Scheduled Workflows require an always-running cluster, which is more expensive but reduces processing latency.\nB. Scheduled Workflows process data as it arrives at configured sources.\nC. Scheduled Workflows can reduce resource consumption and expense since the cluster runs only long enough to execute the pipeline.\nD. Scheduled Workflows run continuously until manually stopped.",
+    "answer": "C",
+    "explanation": "클러스터는 가동하거나 끌 수 있고 원하는 시간에 배치가 실행될 때 실행하도록\n설정할 수 있다. 마찬가지로 비용과 리소스 또한 파이프라인 실행 동안만 사용\n하도록 설정할 수 있기 때문에 계속 가동해 놓을 필요가 없다"
+  },
+  {
+    "id": 46,
+    "question": "A Databricks single-task workflow fails at the last task due to an error in a notebook. The data\nengineer fixes the mistake in the notebook. What should the data engineer do to rerun the\nworkflow?\n\nA. Repair the task\nB. Rerun the pipeline\nC. Restart the Cluster\nD. Switch the cluster",
+    "answer": "A",
+    "explanation": "Repair는 노트북의 오류를 확인하고 수정한 후 다시 실행하도록 하는 버튼이다"
+  },
+  {
+    "id": 47,
+    "question": "An organization is looking for an optimized storage layer that supports ACID transactions and\nschema enforcement. Which technology should the organization use?\n\nA. Cloud File Storage\nB. Unity Catalog\nC. Data lake\nD. Delta Lake",
+    "answer": "D",
+    "explanation": "PDF와 답변 상이하며, 정답은 D\nDleta Lake는 스토리지 레이어의 형태로 Parquet과 _delta_log에 포함된 JSON의 형태로 구성\nDelta Lake는 ACID, Schema enforcement, Optimized Storage Layer를 제공한다"
+  },
+  {
+    "id": 48,
+    "question": "A data engineer has three tables in a Delta Live Tables (DLT) pipeline. They have configured\nthe pipeline to drop invalid records at each table. They notice that some data is being\ndropped due to quality concerns at some point in the DLT pipeline. They would like to\ndetermine at which table in their pipeline the data is being dropped.\nWhich of the following approaches can the data engineer take to identify the table that is\ndropping the records?\n\nA. They can set up separate expectations for each table when developing their DLT pipeline.\nB. They cannot determine which table is dropping the records.\nC. They can set up DLT to notify them via email when records are dropped.\nD. They can navigate to the DLT pipeline page, click on each table, and view the data quality\nstatistics.\nE. They can navigate to the DLT pipeline page, click on the \"Error\" button, and review the\npresent errors.",
+    "answer": "D",
+    "explanation": "DLT (Pipeline)에서 하단의 테이블을 클릭하면 통계를 확인할 수 있다\nOutput records와 Drop 항목등을 포함한다\n더욱 자세한 항목은 Event Log를 통해 별도로 확인이 가능하다"
+  },
+  {
+    "id": 49,
+    "question": "A data engineer is maintaining an ETL pipeline code with a GitHub repository linked to their\nDatabricks account. The data engineer wants to deploy the ETL pipeline to production as a\ndatabricks workflow.\nWhich approach should the data engineer use?\n\nA. Databricks Asset Bundles (DAB) + GitHub Integration\nB. Maintain workflow_config.j son and deploy it using Databricks CLI\nC. Manually create and manage the workflow in Ul\nD. Maintain workflow_conf ig. json and deploy it using Terraform",
+    "answer": "A",
+    "explanation": "데이터브릭스는 Git 연동을 지원하며, workspace의 repos를 통해 가능\n엔지니어는 Github와 연결된 Databricsk를 사용 중이므로.\nAsset Bundle을 github에 연동하여 배포할 수 있다"
+  },
+  {
+    "id": 50,
+    "question": "Which of the following commands can be used to write data into a Delta table while avoiding\nthe writing of duplicate records?\n\nA. DROP\nB. IGNORE\nC. MERGE\nD. APPEND\nE. INSERT",
+    "answer": "C",
+    "explanation": "일반적으로 key를 기준으로 UPSERT를 진행할 수 있는 Merge"
+  },
+  {
+    "id": 51,
+    "question": "A data engineer needs to use a Delta table as part of a data pipeline, but they do not know if\nthey have the appropriate permissions.\nIn which of the following locations can the data engineer review their permissions on the\ntable?\n\nA. Databricks Filesystem\nB. Jobs\nC. Dashboards\nD. Repos\nE. Data Explorer",
+    "answer": "E",
+    "explanation": "Unity Catlalog는 데이터 Asset, 권한, 계보, 등을 총 관리하는 중앙 집중화 된\n거버넌스 시스템이다"
+  },
+  {
+    "id": 52,
+    "question": "A departing platform owner currently holds ownership of multiple catalogs and controls\nstorage credentials and external locations. The data engineer wants to ensure continuity:\ntransfer catalog ownership to the platform team group, delegate ongoing privilege\nmanagement, and retain the ability to receive and share data via Delta Sharing.\nWhich role must be in place to perform these actions across the metastore?\n\nA. Account Admin, because account admins can only create metastores but cannot change\nownership of catalogs.\nB. Workspace Admin, because workspace admins can transfer ownership of any Unity\nCatalog object.\nC. Metastore Admin, because metastore admins can transfer ownership and manage\nprivileges across all metastore objects, including shares and recipients.\nD. Catalog Owner, because catalog owners can transfer any object in any catalog in the\nmetastore.",
+    "answer": "C",
+    "explanation": "여러 카탈로그는 (동일 리전 조건) 하나의 메타스토어에 포함되어 있으며,\n메타 스토어 어드민은 카탈로그 소유권, 권한, 데이터 수신 및 공유를 수행할 수 있다"
+  },
+  {
+    "id": 53,
+    "question": "A data engineer and data analyst are working together on a data pipeline. The data engineer\nis working on the raw, bronze, and silver layers of the pipeline using Python, and the data\nanalyst is working on the gold layer of the pipeline using SQL. The raw source of the pipeline\nis a streaming input. They now want to migrate their pipeline to use Delta Live Tables.\nWhich of the following changes will need to be made to the pipeline when migrating to Delta\nLive Tables?\n\nA. None of these changes will need to be made\nB. The pipeline will need to stop using the medallion-based multi-hop architecture\nC. The pipeline will need to be written entirely in SQL\nD. The pipeline will need to use a batch source in place of a streaming source\nE. The pipeline will need to be written entirely in Python",
+    "answer": "A",
+    "explanation": "변경 없이 소스로 사용하면 된다"
+  },
+  {
+    "id": 54,
+    "question": "A data engineer wants to schedule their Databricks SQL dashboard to refresh every hour, but\nthey only want the associated SQL endpoint to be running when It is necessary. The\ndashboard has multiple queries on multiple datasets associated with it. The data that feeds\nthe dashboard is automatically processed using a Databricks Job.\nWhich approach can the data engineer use to minimize the total running time of the SQL\nendpoint used in the refresh schedule of their dashboard?\n\nA. O They can reduce the cluster size of the SQL endpoint.\nB. Q They can turn on the Auto Stop feature for the SQL endpoint.\nC. O They can set up the dashboard's SQL endpoint to be serverless.\nD. 0 They can ensure the dashboard's SQL endpoint matches each of the queries' SQL\nendpoints.",
+    "answer": "B",
+    "explanation": "자동 중지(Auto Stop) 기능은 SQL Warehouse) 일정 시간 동안 아무런 쿼리를 \n처리하지 않을 때 자동으로 가동을 멈추게하는 기능"
+  },
+  {
+    "id": 55,
+    "question": "A data engineer streams customer orders into a Kafka topic (orders_topic) and is currently\nwriting the ingestion script of a DLT pipeline. The data engineer needs to ingest the data from\nKafka brokers to DLT using Databricks What is the correct code for ingesting the data?\n\nA. CREATE LIVE TABLE orders_raw\n   AS SELECT\n        CAST(value AS STRING) AS json_data\n   FROM STREAM kafka.'broker:9092/orders_topic';\nB. CREATE STREAMING LIVE TABLE orders_raw\n   AS SELECT\n         value:order_id AS order_id,\n         value:customer_id AS customer_id,\n         value:amount AS amount,\n         value:order_status AS order_status,\n         value:order_timestamp AS order_timestamp,\nC. CREATE LIVE TABLE orders_raw\n   AS SELECT\n        CAST(value AS STRING) AS json_data\n   FROM STREAM kafka.'broker:9092/orders_topic';\nD. import dlt\n    @dlt.table(\n          name = \"orders_raw\",\n    )\n    def orders_raw():\n         return (\n              spark.readstream\n              .format(\"kafka\")\n              .option(\"kafka.bootstrap.servers\", \"broker:9092\")\n              .option(\"subscribe\", \"orders_topic\")\n              .option(\"stratingoffsets\", \"earliest\")\n              .load()\n    )",
+    "answer": "D",
+    "explanation": "DLT (Pipeline)에서는 아래와 같이 데코레이터를 사용할 수 있다\n\nimport dlt\n\n@dlt.table\ndef table_name():\n    return spark.read.table(\"source_table\")"
+  },
+  {
+    "id": 56,
+    "question": "A data engineer is setting up access control in Unity Catalog and needs to ensure that a\ngroup of data analysts can query tables but not modify data.\nWhich permission should the data engineer grant to the data analysts?\n\nA. SELECT\nB. INSERT\nC. MODIFY\nD. ALL PRIVILEGES",
+    "answer": "A",
+    "explanation": "조회 권한만 부여하면 된다 (SELECT)"
+  },
+  {
+    "id": 57,
+    "question": "Which two components function in the DB platform architecture's control plane? (Choose\ntwo.)\n\nA. Virtual Machines\nB. Compute Orchestration\nC. Serverless Compute\nD. Compute\nE. Unity Catalog",
+    "answer": "B, E",
+    "explanation": "데이터를 처리하는 컴퓨트는 Data Plane에서 동작하며,\nControl Plane은 이러한 동작을 위해 구성, 관리하는 영역이다."
+  },
+  {
+    "id": 58,
+    "question": "What is stored in a Databricks customer's cloud account?\n\nA. Data\nB. Cluster management metadata\nC. Databricks web application\nD. Notebooks",
+    "answer": "A",
+    "explanation": "12번과 유사한 문제\n데이터브릭스는 데이터를 저장하지 않음\n고객 클라우드 계정 -> AWS, AZURE, GCP 등"
+  },
+  {
+    "id": 59,
+    "question": "Which of the following benefits of using the Databricks Lakehouse Platform is provided by\nDelta Lake?\n\nA. The ability to manipulate the same data using a variety of languages\nB. The ability to collaborate in real time on a single notebook\nC. The ability to set up alerts for query failures\nD. The ability to support batch and streaming workloads\nE. The ability to distribute complex data operations",
+    "answer": "D",
+    "explanation": "델타 레이크는 스토리지 저장 계층 (Delta format)으로서 \n델타 레이크는 데이터가 배치를 통해 들어오든 스트리밍을 통해 들어오든, \n하나의 테이블처럼 깔끔하고 안전하게 관리해 주는 보관소\n\n통합처리와 트랜잭션을 보장"
+  },
+  {
+    "id": 60,
+    "question": "A data engineer that is new to using Python needs to create a Python function to add two\nintegers together and return the sum?\nWhich of the following code blocks can the data engineer use to complete this task?\n\nA. function add_integers(x, y):\n         return x + y\nB. function add_integers(x, y):\n         x + y\nC. def add_integers(x, y):\n         print(x + y)\nD. def add_integers(x, y):\n         return x + y\nE. def add_integers(x, y):\n         x + y",
+    "answer": "D",
+    "explanation": "Python은 함수를 생성할 떄 def를 사용하며 아래와 같이 작성한다\ndef 함수명 (인자1, 인자2):\n   함수 실행부 \n   return 결과"
+  },
+  {
+    "id": 61,
+    "question": "A data engineer is attempting to write Python and SQL in the same command cell and is\nrunning into an error The engineer thought that it was possible to use a Python variable in a\nselect statement.\nWhy does the command fail?\n\nA. Databricks supports multiple languages but only one per notebook.\nB. Databricks supports language interoperability in the same cell but only between Scala and\nSQL\nC. Databricks supports language interoperability but only if a special character is used.\nD. Databricks supports one language per cell.",
+    "answer": "D",
+    "explanation": "PDF와 답변 상이하며, 정답은 D\nDatabricks Notebook은 여러 Langugae (Python, Scala, SQL, R)를 지원하며,\n하나의 Cell에서는 하나의 언어만 사용이 가능하다."
+  },
+  {
+    "id": 62,
+    "question": "A data engineer wants to reduce costs and optimize cloud spending. The data engineer has\ndecided to use Databricks Serverless for lowering cloud costs while maintaining existing\nSLAs.\nWhat is the first step in migrating to Databricks Serverless?\n\nA. Legacy Ingestion pipelines that include ingestion from sources API's, files, JDBC/ODBC\nconnections\nB. Low frequency Bl Dashboarding and Adhoc SQL Analytics\nC. A frequently running and efficient Python-based data transformation pipeline compatible\nwith the latest Databricks runtime and Unity Catalog\nD. A frequently running and efficient Scala-based data transformation pipeline compatible\nwith the latest Databricks runtime and Unity Catalog",
+    "answer": "C",
+    "explanation": "※ SLA: Service Level Agreement 서비스 레벨 협약으로 서비스 품질 및 성능 보장\n\n서버리스는 Unitiy Catalog를 보안과 거버넌스를 위해 필수로 요구합니다.\n또한 비용절감 및 클라우드 비용 최적화에 효과적이며, 자주 실행되는 파이프라인\n에서 관리 및 비용절감에 효과적이다. 마지막으로 서버리스는 특히 Python 기반의\n워크로드를 강력히 지원하고 있다"
+  },
+  {
+    "id": 63,
+    "question": "In which of the following file formats is data from Delta Lake tables primarily stored?\n\nA. Delta\nB. CSV\nC. Parquet\nD. JSON\nE. A proprietary, optimized format specific to Databricks",
+    "answer": "C",
+    "explanation": "Delta Lake는 Parquet (데이터)와 JSON (Log 및 메타) 데이터를 가진 스토리지 포멧"
+  },
+  {
+    "id": 64,
+    "question": "Which of the following describes a benefit of creating an external table from Parquet rather\nthan CSV when using a CREATE TABLE AS SELECT statement?\n\nA. Parquet files can be partitioned\nB. CREATE TABLE AS SELECT statements cannot be used on files\nC. Parquet files have a well-defined schema\nD. Parquet files have the ability to be optimized\nE. Parquet files will become Delta tables",
+    "answer": "C",
+    "explanation": "CSV는 콤마 (,)로 구분된 텍스트 파일이기 때문에 스키마에 대한 정보가 파일 자체에 \n존재하지 않음\n하지만 Parquet은 메타 데이터 정보를 파일 안에 포함하고 있기 때문에 \n정확한 데이터 타입을 가진 테이블을 생성할 수 있다"
+  },
+  {
+    "id": 65,
+    "question": "A data engineer wants to schedule their Databricks SQL dashboard to refresh once per day,\nbut they only want the associated SQL endpoint to be running when it is necessary.\nWhich of the following approaches can the data engineer use to minimize the total running\ntime of the SQL endpoint used in the refresh schedule of their dashboard?\n\nA. They can ensure the dashboard's SQL endpoint matches each of the queries' SQL\nendpoints.\nB. They can set up the dashboard's SQL endpoint to be serverless.\nC. They can turn on the Auto Stop feature for the SQL endpoint.\nD. They can reduce the cluster size of the SQL endpoint.\nE. They can ensure the dashboard's SQL endpoint is not one of the included query's SQL\nendpoint.",
+    "answer": "B",
+    "explanation": "새로 고침이 필요할 때만 SQL ENDPOINT가 실행 되도록 하고 싶으며,\n총 실행 시간을 최소화하는 방법은 Serverless가 가장 효과적\nServerless는 구동시간이 일반 Cluster 보다 현저하게 빠르며, (5초 이내)\n필요한 경우에만 구동하고 종료 할 수 있다\n\nAuto Stop 또한 유용한 기능이나, 분 단위로 종료 시간을 수동으로 설정해야하며,\n쿼리가 빨리 끝난 경우 (e.g. 1분 30초) 자동 종룔를 5분으로 걸어놓는다면 오히려 손해일 수 있다."
+  },
+  {
+    "id": 66,
+    "question": "A data engineer needs to provide access to a group named manufacturing-team. The team\nneeds privileges to create tables in the quality schema.\nWhich set of SQL commands will grant a group named manufacturing-team to create tables\nin a schema named production with the parent catalog named manufacturing with the least\nprivileges?\n\nA. GRANT CREATE TABLE ON SCHEMA manufacturing.quality TO manufacturing-team; \n    GRANT USE SCHEMA ON SCHEMA manufacturing.quality TO manufacturing-team; \n    GRANT USE CATALOG ON CATALOG manufacturing TO manufacturing-team;\nB. GRANT CREATE TABLE ON SCHEMA manufacturing.quality TO manufacturing-team; \n   GRANT CREATE SCHEMA ON SCHEMA manufacturing.quality TO manufacturing-team; \n   GRANT CREATE CATALOG ON CATALOG manufacturing TO manufacturing-team;\nC. GRANT CREATE TABLE ON SCHEMA manufacturing.quality TO manufacturing-team; \n   GRANT CREATE SCHEMA ON SCHEMA manufacturing.quality TO manufacturing-team; \n   GRANT USE CATALOG ON CATALOG manufacturing TO manufacturing-team;\nD. GRANT USE TABLE ON SCHEMA manufacturing.quality TO manufacturing-team; \n   GRANT USE SCHEMA ON SCHEMA manufacturing.quality TO manufacturing-team; \n   GRANT USE CATALOG ON CATALOG manufacturing TO manufacturing-team;",
+    "answer": "A",
+    "explanation": "테이블 생성 권한 CREATE\n테이블을 사용하기 위해 CATALOG, SCHEMA 사용 권한이 필요 (USE)\n\nCATALOG -> SCHEMA -> TABLE"
+  },
+  {
+    "id": 67,
+    "question": "A data engineer needs to use a Delta table as part of a data pipeline, but they do not know if\nthey have the appropriate permissions.\nIn which location can the data engineer review their permissions on the table?\n\nA. Jobs\nB. Dashboards\nC. Catalog Explorer\nD. Repos",
+    "answer": "C",
+    "explanation": "51번과 동일한 문제\nUnity Catalog는 거버넌스 중앙 집중 시스템"
+  },
+  {
+    "id": 68,
+    "question": "A data engineer needs to ingest from both streaming and batch sources for a firm that relies\non highly accurate data. Occasionally, some of the data picked up by the sensors that\nprovide a streaming input are outside the expected parameters. If this occurs, the data must\nbe dropped, but the stream should not fail.\nWhich feature of Delta Live Tables meets this requirement?\n\nA. Monitoring\nB. Change Data Capture\nC. Expectations\nD. Error Handling",
+    "answer": "C",
+    "explanation": "PDF와 답변 상이하며, 정답은 C\nDLT (Pipleine)에서는 Python : @expect\nSQL: CONSTRAIN … EXPECT 를 사용하여 예상범위 값을 핸들링 할 수 있다\n\nCREATE OR REFRESH LIVE TABLE tableA (\n  CONSTRAINT COL_A EXPECT (COL_A BETWEEN 0 AND 100) ON VIOLATION DROP ROW\n)\nAS SELECT * FROM STREAM(LIVE.TABLE_BRONZE);"
+  },
+  {
+    "id": 69,
+    "question": "A Delta Live Table pipeline includes two datasets defined using STREAMING LIVE TABLE.\nThree datasets are defined against Delta Lake table sources using LIVE TABLE.\nThe table is configured to run in Production mode using the Continuous Pipeline Mode.\nAssuming previously unprocessed data exists and all definitions are valid, what is the\nexpected outcome after clicking Start to update the pipeline?\n\nA. All datasets will be updated at set intervals until the pipeline is shut down. The compute\nresources will persist to allow for additional testing.\nB. All datasets will be updated once and the pipeline will persist without any processing. The\ncompute resources will persist but go unused.\nC. All datasets will be updated at set intervals until the pipeline is shut down. The compute\nresources will be deployed for the update and terminated when the pipeline is stopped.\nD. All datasets will be updated once and the pipeline will shut down. The compute resources\nwill be terminated.\nE. All datasets will be updated once and the pipeline will shut down. The compute resources\nwill persist to allow for additional testing.",
+    "answer": "C",
+    "explanation": "실행 Mode\n - Development: 한번 띄운 클러스터를 일정 시간 유지하며, 일정 시간 후 종료됨\n - Production: 컴퓨트 리소스가 배포되고 안정성을 위해 파이프라인이 실행되는 동안 컴퓨팅 자원은 계속 유지\n\n업데이트 기준 Mode\n - Trigger: 동작 (Start) 시 한번 처리되며 자동 종료\n - Continuous: 데이터가 들어올 때마다 또는 일정간격으로 계속 업데이트되며\n                   파이프라인이 종료되지 않음\n\n따라서 Production + Continuous는 \n일정간격으로 업데이트되며, 파이프라인은 계속 유지되며 리소스도 지속적으로 유지"
+  },
+  {
+    "id": 70,
+    "question": "An engineering manager wants to monitor the performance of a recent project using a\nDatabricks SQL query.\nFor the first week following the project's release, the manager wants the query results to be\nupdated every minute. However, the manager is concerned that the compute resources used\nfor the query will be left running and cost the organization a lot of money beyond the first\nweek of the project's release.\nWhich of the following approaches can the engineering team use to ensure the query does\nnot cost the organization any money beyond the first week of the project's release?\n\nA. They can set a limit to the number of DBUs that are consumed by the SQL Endpoint.\nB. They can set the query's refresh schedule to end after a certain number of refreshes.\nC. They cannot ensure the query does not cost the organization money beyond the first week\nof the project' s release.\nD. They can set a limit to the number of individuals that are able to manage the query's\nrefresh schedule.\nE. They can set the query's refresh schedule to end on a certain date in the query scheduler.",
+    "answer": "E",
+    "explanation": "실제 활용과 괴리가 있는 문제이며, 답은 E로 외워야함\n쿼리 스케줄러에서 특정 날짜에 스케줄이 종료되도록 설정할 수 있는 \n방법은 ui상으로 불가능"
+  },
+  {
+    "id": 71,
+    "question": "Which SQL code snippet will correctly demonstrate a Data Definition Language (DDL)\noperation used to create a table?\n\nA. DROP TABLE employees;\nB. INSERT INTO employees (id, name) VALUES (1, 'Alice');\nC. CREATE TABLE employees ( id INT, name STRING);\nD. ALTER TABLE employees add column salary DECIMAL(10,2);",
+    "answer": "C",
+    "explanation": "CREATE TABLE {TABLE_NAME} ( )"
+  },
+  {
+    "id": 72,
+    "question": "A global retail company sells products across multiple categories (e.g.. Electronics, Clothing)\nand regions (e.g.. North. South, East. West). The sales team has provided the data engineer with a PySpark dataframe named sales_df as below and the team wants the data engineer to analyze the sales data to help them make strategic decisions.\n\n\n\n\n\n\n\n\n\n\nA. Category_sales = sales df.groupBy(\"category\").agg(sum(\"sales amount\").alias(\"total\nsales amount\"))\nB. Category_sales = sales_df.sum(\"3ales_amount\").groupBy(\"category).alias(\"total_sales_amount))\nC. Category_sales = sales_df.agg(sum(\"sales amount\").groupBy(\"category\").alias(\"total sales\namount\"))\nD. Category_sales = sales_df.groupBy(\"reqion\").agg(sum(\"sales_amount).alias(total_sales_amount''))",
+    "answer": "A",
+    "explanation": "문법은 아래와 같다\n\ngroupBy( )\n    .agg( \n          .sum(\" \").alias(\" \"),\n          .avg(\" \").alias(\" \"),\n          .count(\" \").alias(\" \")\n     )\n\n문제의 경우 category 별로 집계하여 매출 분석을 수행할 수 있다.\nD의 경우 \" 의 사용이 잘못되었으며, region에도 오타가 존재한다."
+  },
+  {
+    "id": 73,
+    "question": "The Delta transaction log for the 'students' tables is shown using the 'DESCRIBE HISTORY\nstudents' command. A Data Engineer needs to query the table as it existed before the\nUPDATE operation listed in the log.\n\n\n\n\n\n\n\n\n\n\nWhich command should the Data Engineer use to achieve this? (Choose two.)\n\nA. SELECT * FROM students@v4\nB. SELECT * FROM students TIMESTAMP AS OF '2024-04-22T 14:32:47.000+00:00'\nC. SELECT * FROM students FROM HISTORY VERSION AS OF 3\nD. SELECT * FROM students VERSION AS OF 5\nE. SELECT * FROM students TIMESTAMP AS OF '2024-04-22T 14:32:58.000+00:00'",
+    "answer": "A, B",
+    "explanation": "Delta Table의 Time Travel 사용 방식\n1. table_name@v3 과 같이 version 3를 축약하여 사용하는 방법\n2. Timestamp as of 를 사용하여 특정 날짜 시간보다 빠른 날자를 설정"
+  },
+  {
+    "id": 74,
+    "question": "A data engineer needs to process SQL queries on a large dataset with fluctuating workloads.\nThe workload requires automatic scaling based on the volume of queries, without the need to\nmanage or provision infrastructure. The solution should be cost-efficient and charge only for\nthe compute resources used during query execution.\nWhich compute option should the data engineer use?\n\nA. Databricks SQL Analytics\nB. Databricks Jobs\nC. Databricks Runtime for ML\nD. Serverless SQL Warehouse",
+    "answer": "D",
+    "explanation": "쿼리양에 따라 자동으로 확장되고 인프라 관리가 필요 없는 방법은\nServerless"
+  },
+  {
+    "id": 75,
+    "question": "A data engineer is getting a partner organization up to speed with Databricks account. Both\nteams share some business use cases. The data engineer has to share some of your UnityCatalog managed delta tables and the notebook jobs creating those tables with the partner\norganization.\nHow can the data engineer seamlessly share the required information?\n\nA. Zip all the code and share via email and allow data ingestion from your data lake\nB. Data and Notebooks can be shared simply using Unity Catalog.\nC. Share access to codebase via Github and allow them to ingest datasets from your\nDatalake.\nD. Share required datasets and notebooks via Delta Sharing. Manage permissions via Unity\nCatalog.",
+    "answer": "D",
+    "explanation": "동일한 리전에 있는 워크스페이스는 동일한 메타 스토어를 사용합니다.\n두 개의 상이한 Workspace는 서로의 데이터를 Delta Sharing을 통해 \n데이터와 노트북을 공유할 수 있고 하나의 UC에서 권한을 관리할 수 있다."
+  },
+  {
+    "id": 76,
+    "question": "A data engineer has been given a new record of data:\nid STRING = 'a1'\nrank INTEGER = 6\nrating FLOAT = 9.4\nWhich of the following SQL commands can be used to append the new record to an existing\nDelta table my_table?\n\nA. INSERT INTO my_table VALUES ('a1', 6, 9.4)\nB. my_table UNION VALUES ('a1', 6, 9.4)\nC. INSERT VALUES ( 'a1' , 6, 9.4) INTO my_table\nD. UPDATE my_table VALUES ('a1', 6, 9.4)\nE. UPDATE VALUES ('a1', 6, 9.4) my_table",
+    "answer": "A",
+    "explanation": "sql문과 동일하게 INSERT INTO {TABLE_NAME} VALUES {VAL}을 사용한다"
+  },
+  {
+    "id": 77,
+    "question": "A data architect has determined that a table of the following format is necessary:\n\n\n\n\n\n\n\n\n\n\nWhich of the following code blocks uses SQL DDL commands to create an empty Delta table\nin the above format regardless of whether a table already exists with this name?\n\nA. CREATE TABLE IF NOT EXISTS table_name (\n       employeeId STRING,\n       startDate DATE,\n       avgRating FLOAT\n    )\nB. CREATE OR REPLACE TABLE table_name AS\n   SELECT employeeId STRING,\n             startDate DATE,\n             avgRating FLOAT\n   USING DELTA\nC. CREATE OR REPLACE TABLE table_name WITH COLUMNS (\n       employeeId STRING,\n       startDate DATE,\n       avgRating FLOAT\n   ) USING DELTA\nD. CREATE TABLE table_name AS\n   SELECT employeeId STRING,\n             startDate DATE,\n             avgRating FLOAT\nE. CREATE OR REPLACE TABLE table_name (\n       employeeId STRING,\n       startDate DATE,\n       avgRating FLOAT\n    )",
+    "answer": "E",
+    "explanation": "CREATE (OR REPLACE) TABLE (TABLE PATH) TABLE_NAME (\nCOL_NAME COL_TYPE,\nCOL_NAME COL_TYPE,\n…\n-"
+  },
+  {
+    "id": 78,
+    "question": "A data analysis team has noticed that their Databricks SQL queries are running too slowly\nwhen connected to their always-on SQL endpoint. They claim that this issue is present when\nmany members of the team are running small queries simultaneously. They ask the data\nengineering team for help. The data engineering team notices that each of the team's queries\nuses the same SQL endpoint.\nWhich of the following approaches can the data engineering team use to improve the latency\nof the team's queries?\n\nA. They can increase the cluster size of the SQL endpoint.\nB. They can increase the maximum bound of the SQL endpoint's scaling range.\nC. They can turn on the Auto Stop feature for the SQL endpoint.\nD. They can turn on the Serverless feature for the SQL endpoint.\nE. They can turn on the Serverless feature for the SQL endpoint and change the Spot\nInstance Policy to \"Reliability Optimized.\"",
+    "answer": "B",
+    "explanation": "PDF와 답변 상이하며, 동시성 해결 문제로서 정답은 B\n동시성 문제를 해결하기 위한 문제로서 Scaling Range의 최대치를 늘리면,\n클러스터 부하 시 데이터브릭스가 클러스터를 추가로 띄워 쿼리를 분산처리함"
+  },
+  {
+    "id": 79,
+    "question": "A data analyst has created a Delta table sales that is used by the entire data analysis team.\nThey want help from the data engineering team to implement a series of tests to ensure the\ndata is clean. However, the data engineering team uses Python for its tests rather than SQL.\nWhich of the following commands could the data engineering team use to access sales in\nPySpark?\n\nA. SELECT * FROM sales\nB. There is no way to share data between PySpark and SQL.\nC. spark.sql(\"sales\")\nD. spark.delta.table(\"sales\")\nE. spark.table(\"sales\")",
+    "answer": "E",
+    "explanation": "pyspark에서는 테이블을 불러올 때 아래와 같은 문법을 사용합니다.\nSpark.read.table(path.table) 또는 spark.table(path.table)"
+  },
+  {
+    "id": 80,
+    "question": "A data engineer has a Python notebook in Databricks, but they need to use SQL to ccomplish a specific task within a cell. They still want all of the other cells to use Python  without making any changes to those cells. \nWhich of the following describes how the data engineer can use SQL within a cell of their\nPython notebook?\n\nA. It is not possible to use SQL in a Python notebook\nB. They can attach the cell to a SQL endpoint rather than a Databricks cluster\nC. They can simply write SQL syntax in the cell\nD. They can add %sql to the first line of the cell\nE. They can change the default language of the notebook to SQL",
+    "answer": "D",
+    "explanation": "%를 사용하여 언어를 변경하는 방법은 매직커맨드를 사용하는 방법이며,\n반드시 셀의 가장 상단에 % (매직커맨드)를 사용하여 언어를 변경할 수 있다.\n단, 매직커맨드 뒤에 오는 언어 설정은 소문자로 작성해야한다.\n%sql, %r, %scala, %python"
+  },
+  {
+    "id": 81,
+    "question": "A data engineer only wants to execute the final block of a Python program if the Python\nvariable day_of_week is equal to 1 and the Python variable review_period is True.\nWhich of the following control flow statements should the data engineer use to begin this\nconditionally executed code block?\n\nA. if day_of_week = 1 and review_period:\nB. if day_of_week = 1 and review_period = \"True\":\nC. if day_of_week == 1 and review_period == \"True\":\nD. if day_of_week == 1 and review_period:\nE. if day_of_week = 1 & review_period: = \"True\":",
+    "answer": "D",
+    "explanation": "Python에서 \"=\"는 대입을 뜻하며, qeual은 \"==\"를 사용합니다.\nDay_of_wekk가 1\"이고\" 동시에 review_period가 True라는 조건이기 때문에\nand로 묶어서 사용합니다\nreview_period는 ==True를 쓸 필요가 없습니다."
+  },
+  {
+    "id": 82,
+    "question": "A data engineer needs to create a table in Databricks using data from a CSV file at location\n/path/to/csv.\nThey run the following command:\nCREATE TABLE new_table\n________\nOPTIONS (\n    header = \"true\",\n    delimiter  = \"|\"\n)\nLOCATION \"path/to/csv\"\nWhich of the following lines of code fills in the above blank to successfully complete the task?\n\nA. None of these lines of code are needed to successfully complete the task\nB. USING CSV\nC. FROM CSV\nD. USING DELTA\nE. FROM \"path/to/csv\"",
+    "answer": "B",
+    "explanation": "SQL에서 데이터타입은 USING을 사용하여 가져올 수 있습니다.\nCSV를 가져오기 때문에 USING CSV가 답이며,\nUSING DELTA는 델타 테이블을 가져오지만, 생략할 수 있습니다."
+  },
+  {
+    "id": 83,
+    "question": "A data engineer is working in a Python notebook on Databricks to process data, but notices\nthat the output is not as expected. The data engineer wants to investigate the issue by\nstepping through the code and checking the values of certain variables during execution.\nWhich tool should the data engineer use to inspect the code execution and variables in realtime?\n\nA. Python Notebook Interactive Debugger\nB. Cluster Logs\nC. SQL Analytics\nD. Job Execution Dashboard",
+    "answer": "A",
+    "explanation": "Python Notebook Interactive Debugger\n- Databricks 에서 제공하는 노트북 내 디버거\n- 변수 값 확인, 중단점 설정\n\nCluster Logs : 실행 기록과 에러 메시지 확인용\n\nSQL Analytics : SQL 쿼리 실행과 분석용 도구\n\nJob Execution Dashboard : 잡 실행상태, 성공/실패, 소요시간 모니터링용"
+  },
+  {
+    "id": 84,
+    "question": "Which of the following is a benefit of the Databricks Lakehouse Platform embracing open\nsource technologies?\n\nA. Cloud-specific integrations\nB. Simplified governance\nC. Ability to scale storage\nD. Ability to scale workloads\nE. Avoiding vendor lock-in",
+    "answer": "E",
+    "explanation": "오픈 소스 활용 시 얻는 이점\n- 표준화된 파일 포맷과 API 사용\n- 플랫폼 종속성 감소 (특정 클라우드/벤더에 묶이지 않음)"
+  },
+  {
+    "id": 85,
+    "question": "A data engineering team has noticed that their Databricks SQL queries are running too slowly\nwhen they are submitted to a non-running SQL endpoint. The data engineering team wants\nthis issue to be resolved.\nWhich of the following approaches can the team use to reduce the time it takes to return\nresults in this scenario?\n\nA. They can turn on the Serverless feature for the SQL endpoint and change the Spot\nInstance Policy to\n\"Reliability Optimized.\"\nB. They can turn on the Auto Stop feature for the SQL endpoint.\nC. They can increase the cluster size of the SQL endpoint.\nD. They can turn on the Serverless feature for the SQL endpoint.\nE. They can increase the maximum bound of the SQL endpoint's scaling range",
+    "answer": "D",
+    "explanation": "Auto Stop : 사용하지 않을 때 자동으로 종료되는 기능\nServerless : 클러스터를 미리 준비하고 필요 시 자동으로 활성화"
+  },
+  {
+    "id": 86,
+    "question": "What is the maximum output supported by a job cluster to ensure a notebook does not fail?\n\nA. 10MBS\nB. 25MBS\nC. 30MBS\nD. 15MBS",
+    "answer": "A",
+    "explanation": "Job Cluster 출력 제한\n- 너무 큰 출력은 노트북 세션이 실패하거나 UI가 멈춤 현상을 일으킴\n- 안전하게 허용되는 최대 출력은 10MB"
+  },
+  {
+    "id": 87,
+    "question": "A data engineer is reviewing the documentation on audit logs in Databricks for compliance purposes and needs to understand the format in which audit logs output events. How are events formatted in Databricks audit logs?\n\nA. In Databricks, audit logs output events in a plain text format.\nB. In Databricks, audit logs output events in a JSON format.\nC. In Databricks, audit logs output events in an XML format.\nD. In Databricks, audit logs output events in a CSV format.",
+    "answer": "B",
+    "explanation": "Databricks 감사 로그(Audit Logs)\n- 클러스터, 작업, SQL, Unity Catalog 등에서 발생하는 사용자 활동 이벤트 기록\n- 외부 시스템(Splunk, SIEM 등)과 통합 가능\n\n로그 포맷\n- Databricks 공식 문서 기준: 모든 감사 로그 이벤트는 JSON 형식으로 기록\n- JSON 장점 : 구조화된 데이터 표현 / 쉽게 쿼리 가능 / 다양한 로그 분석 /관제 시스템과 호환"
+  },
+  {
+    "id": 88,
+    "question": "A data engineer is working with two tables. Each of these tables is displayed below in its entirety.\n\n\n\n\nThe data engineer runs the following query to join these tables together\nSELECT\n  sales.customer_id,\n  sales.spend,\n  favorite_stores.store_id\nFROM sales\nLEFT JOIN favorite_stores\nON sales.customer_id = favorite_stores.customer_id;\nWhich of the following will be returned by the above query?\n\n\n\n\n\nA. Option A\nB. Option B\nC. Option C\nD. Option D",
+    "answer": "C",
+    "explanation": "PDF와 답변 상이하며 정답은 C\nLEFT JOIN → sales 테이블의 모든 행 유지. On 조건에 따라 매칭되는 행 없으면  store_id 값은 Null"
+  },
+  {
+    "id": 89,
+    "question": "A new data engineering team team has been assigned to an ELT project. The new data engineering team will need full privileges on the table sales to fully manage the project.\nWhich command can be used to grant full permissions on the database to the new data engineering team?\n\nA. grant all privileges on table sales TO team;\nB. GRANT SELECT ON TABLE sales TO team;\nC. GRANT SELECT CREATE MODIFY ON TABLE sales TO team;\nD. GRANT ALL PRIVILEGES ON TABLE team TO sales;",
+    "answer": "A",
+    "explanation": "GRANT ALL PRIVILEGES : 모든 작업가능\n- GRANT <권한 종류> ON TABLE <테이블명> TO <사용자 또는 그룹>;\n- SELECT, INSERT, UPDATE, DELETE, MODIFY 등"
+  },
+  {
+    "id": 90,
+    "question": "Which of the following data lakehouse features results in improved data quality over a traditional data lake?\n\nA. A data lakehouse provides storage solutions for structured and unstructured data.\nB. A data lakehouse supports ACID-compliant transactions.\nC. A data lakehouse allows the use of SQL queries to examine data.\nD. A data lakehouse stores data in open formats.\nE. A data lakehouse enables machine learning and artificial Intelligence workloads.",
+    "answer": "B",
+    "explanation": "traditional data lake\n- ACID 미지원 (여러 사용자가 동시에 읽기/쓰기 시, 데이터 충돌 가능)\n\ndata lakehouse\n- ACID 트랜잭션 지원 (동시성 문제 해결)"
+  },
+  {
+    "id": 91,
+    "question": "A data engineer needs to conduct Exploratory Data Analysis (EDA) on data residing in a database within the company's custom-defined cloud network. The data engineer is using\nSQL for this task.\nWhich type of SQL Warehouse will enable the data engineer to process large numbers of queries quickly and cost-effectively?\n\nA. All-purpose compute cluster\nB. Pro SQL Warehouse\nC. SQL Serverless Warehouse\nD. Classic SQL Warehouse",
+    "answer": "C",
+    "explanation": "Serverless SQL Warehouse\n- Databricks가 인스턴스 선택, 스케일링, 최적화 관리\t\n- 서버 관리 불필요\n- 빠른 시작 및 비용 효율적\n- EDA처럼 많은 쿼리 처리에 적합\n- Serverless는 특정 지역/네트워크 제약이 있음\n\nClassic SQL Warehouse\n- 사용자가 직접 클러스터 구성\n- 유연하지만 시작/관리 비용 존재\n\nPro SQL Warehouse\n- 고성능 SQL 전용, 멀티 테넌트 지원\t\n- 데이터 보호, 대규모 쿼리 처리 가능\n- 일반 EDA보다는 정형화된 SQL 처리에 적합\n\nAll-purpose cluster\n- 노트북 중심, 데이터 엔지니어링/ML에 최적\t\n- SQL 전용은 아님, EDA에 쿼리 성능 최적화 안 됨"
+  },
+  {
+    "id": 92,
+    "question": "A data engineer wants to create a data entity from a couple of tables. The data entity must be used by other data engineers in other sessions. It also must be saved to a physical location.\nWhich of the following data entities should the data engineer create?\n\nA. Database\nB. Function\nC. View\nD. Temporary view\nE. Table",
+    "answer": "E",
+    "explanation": "Table : 데이터를 물리적으로 저장 / 다른 세션에서 사용 가능 / 지속적으로 존재\nView / Temporary View : 데이터 저장하지 않고 쿼리 결과만 보여줌\nDatabase : 테이블, 뷰 등 객체를 그룹화\nFunction : 재사용 가능한 연산 정의"
+  },
+  {
+    "id": 93,
+    "question": "A data engineer has a single-task Job that runs each morning before they begin working.\nAfter identifying an upstream data issue, they need to set up another task to run a new notebook prior to the original task.\nWhich of the following approaches can the data engineer use to set up the new task?\n\nA. They can clone the existing task in the existing Job and update it to run the new notebook.\nB. They can create a new task in the existing Job and then add it as a dependency of the original task.\nC. They can create a new task in the existing Job and then add the original task as a dependency of the new task.\nD. They can create a new job from scratch and add both tasks to run concurrently.\nE. They can clone the existing task to a new Job and then edit it to run the new notebook.",
+    "answer": "B",
+    "explanation": "Databricks Job과 Task 종속성\n- Job에는 여러 Task를 정의할 수 있음\n- 각 Task에 선행 지정 가능 (Task dependency)"
+  },
+  {
+    "id": 94,
+    "question": "A data engineer is processing ingested streaming tables and needs to filter out NULL values in the order_datetime column from the raw streaming table orders_raw and store the results in a new table orders_valid using DLT. Which code snippet should the data engineer use?\n\nA. CREATE OR REFRESH STREAMING TABLE orders_valid\n(\n  CONSTRAINT valid_date EXPECT (order_datetime IS NOT NULL)\n  ON VIOLATION DROP ROW\n)\nAS SELECT * FROM orders_raw;\n\nB. CREATE OR REFRESH STREAMING TABLE orders_valid\n(\n  CONSTRAINT valid_date\n  EXPECT (order_datetime IS NOT NULL)\n  ON VIOLATION DROP ROW\n)\nAS SELECT * FROM STREAM orders_raw;\n\nC. CREATE OR REFRESH STREAMING TABLE orders_valid\nAS\nSELECT *\nFROM STREAM(orders_raw)\nWHERE order_datetime IS NOT NULL;\n\nD. CREATE OR REPLACE STREAMING TABLE orders_valid\n  (FILTER (order_datetime IS NOT NULL))\nAS SELECT * FROM STREAM(orders_raw);",
+    "answer": "B",
+    "explanation": "DLT에서 streaming table을 읽을 때 streaming을 명시해야하며,\nNULL 값을 제거하기 위해 EXPECT를 지정할 수 있다.\nCREATE OR REFRESH STREAMING TABLE\n로 스트리밍 테이블 지정\n\nEXPECT CONTRAINT로 데이터 품질 규칙 (IS NOT NULL)을 설정하고\nON VIOLATION DROP ROW로 조건 위반을 설정한다"
+  },
+  {
+    "id": 95,
+    "question": "Which of the following tools is used by Auto Loader process data incrementally?\n\nA. Checkpointing\nB. Spark Structured Streaming\nC. Data Explorer\nD. Unity Catalog\nE. Databricks SQL",
+    "answer": "B",
+    "explanation": "Auto Loader는 스트리밍 테이블에서 사용한다"
+  },
+  {
+    "id": 96,
+    "question": "A data engineer is running code in a Databricks Repo that is cloned from a central Git repository. A colleague of the data engineer informs them that changes have been made and synced to the central Git repository. The data engineer now needs to sync their Databricks Repo to get the changes from the central Git repository.\nWhich of the following Git operations does the data engineer need to run to accomplish this task?\n\nA. Merge\nB. Push\nC. Pull\nD. Commit\nE. Clone",
+    "answer": "C",
+    "explanation": "clone : 중앙 저장소 전체를 처음 내 로컬/Repo로 가져올 때 사용\npull : 중앙 저장소의 최신 변경 사항을 가져와서 내 브랜치에 합침\npush : 내 변경 사항을 중앙 저장소에 업로드\ncommit : 내 변경 사항을 로컬 저장소에 기록\nmerge : 두 브랜치의 변경 사항을 합침 (pull 내부에서 자동 실행될 수 있음)"
+  },
+  {
+    "id": 97,
+    "question": "A data engineering team has two tables. The first table march_transactions is a collection of all retail transactions in the month of March. The second table april_transactions is a collection of all retail transactions in the month of April. There are no duplicate records between the tables.\nWhich of the following commands should be run to create a new table all_transactions that contains all records from march_transactions and april_transactions without duplicate records?\n\nA. CREATE TABLE all_transactions AS\nSELECT * FROM march_transactions\nINNER JOIN SELECT * FROM april_transactions;\nB. CREATE TABLE all_transactions AS\nSELECT * FROM march_transactions\nUNION SELECT * FROM april_transactions;\nC. CREATE TABLE all_transactions AS\nSELECT * FROM march_transactions\nOUTER JOIN SELECT * FROM april_transactions;\nD. CREATE TABLE all_transactions AS\nSELECT * FROM march_transactions\nINTERSECT SELECT * from april_transactions;\nE. CREATE TABLE all_transactions AS\nSELECT * FROM march_transactions\nMERGE SELECT * FROM april_transactions;",
+    "answer": "B",
+    "explanation": "UNION : 두 테이블의 모든 레코드를 합치고 중복 제거\nINTERSECT : 두 테이블에 공통으로 존재하는 레코드만 선택"
+  },
+  {
+    "id": 98,
+    "question": "A new data engineering team team. has been assigned to an ELT project. The new data engineering team will need full privileges on the database customers to fully manage the\nproject.\nWhich of the following commands can be used to grant full permissions on the database to the new data engineering team?\n\nA. GRANT USAGE ON DATABASE customers TO team;\nB. GRANT ALL PRIVILEGES ON DATABASE team TO customers;\nC. GRANT SELECT PRIVILEGES ON DATABASE customers TO teams;\nD. GRANT SELECT CREATE MODIFY USAGE PRIVILEGES ON DATABASE customers TO team;\nE. GRANT ALL PRIVILEGES ON DATABASE customers TO team;",
+    "answer": "E",
+    "explanation": "GRANT ALL PRIVILEGES : 모든 작업가능\n- SELECT, INSERT, UPDATE, DELETE, MODIFY 등"
+  },
+  {
+    "id": 99,
+    "question": "A Delta Live Table pipeline includes two datasets defined using streaming live table. Three datasets are defined against Delta Lake table sources using live table.\nThe table is configured to run in Production mode using the Continuous Pipeline Mode.\nWhat is the expected outcome after clicking Start to update the pipeline assuming previously unprocessed data exists and all definitions are valid?\n\nA. All datasets will be updated once and the pipeline will shut down. The compute resources will be terminated.\nB. All datasets will be updated at set intervals until the pipeline is shut down. The compute resources will persist to allow for additional testing.\nC. All datasets will be updated once and the pipeline will shut down. The compute resources will persist to allow for additional testing.\nD. All datasets will be updated at set intervals until the pipeline is shut down. The compute resources will be deployed for the update and terminated when the pipeline is stopped.",
+    "answer": "D",
+    "explanation": "Continuous Pipeline Mode → 파이프라인이 계속 실행되면서 데이터를 실시간으로 처리\nProduction Mode → 자동 스케일링과 안정성 제공. Compute는 실제로 데이터 업데이트 시에만 활성화"
+  },
+  {
+    "id": 100,
+    "question": "Which of the following Structured Streaming queries is performing a hop from a Silver table to a Gold table?\n\nA. (spark.readStream.load(rawSalesLocation)\n   .writeStream\n   .option(\"checkpointLocation\", checkpointPath)\n   .outputMode(\"append\")\n   .table(\"newSales\")\nB. (spark.read.load(rawSalesLocation)\n   .writeStream\n   .option(\"checkpointLocation\", checkpointPath)\n   .outputMode(\"append\")\n   .table(\"newSales\")\nC. (spark.table(\"sales\")\n   .withColumn(\"avgprice\", col(\"sales\") / col(\"units\"))\n   .writeStream\n   .option(\"checkpointLocation\",checkpointPath)\n   .outputMode(\"append\")\n   .table(\"newSales\")\nD. (spark.table(\"sales\")\n   .filter(col(\"units\") > 0)\n   .writeStream\n   .option(\"checkpointLocation\", checkpointPath)\n   .outputMode(\"append\")\n   .table(\"newSales\"))\nE. (spark.table(\"sales\")\n   .groupBy(\"store\")\n   .agg(sum(\"sales\"))\n   .writeStream\n   .option(\"checkpointLocation\", checkpointPath)\n   .outputMode(\"complete\")\n   .table(\"newSales\")",
+    "answer": "E",
+    "explanation": "Structured Streaming Hop\n- Delta Live Tables / Structured Streaming에서 hop은 한 레벨 테이블에서 다음 레벨 테이블로의 데이터 흐름\n\nSilver 테이블에서 Gold 테이블로의 hop\n- 정제/정규화된 테이블(Silver)을 소스로 사용\n- Streaming 쿼리를 통해 Gold 테이블에 집계/추가 연산 후 기록"
+  },
+  {
+    "id": 101,
+    "question": "A Databricks workflow fails at the last stage due to an error in a notebook. This workflow runs\ndaily. The data engineer fixes the mistake and wants to rerun the pipeline. This workflow is\nvery costly and time- intensive to run.\nWhich action should the data engineer do in order to minimise downtime and cost?\n\nA. Switch to another cluster\nB. Repair run\nC. Re-run the entire workflow\nD. Restart the cluster",
+    "answer": "B",
+    "explanation": "Repair run\n- 실패한 task만 재실행"
+  },
+  {
+    "id": 102,
+    "question": "A data engineer is migrating pipeline tasks to reduce operational toil. The workspace uses Unity Catalog and is in a region that supports serverless. The engineer wants Databricks to auto-select instance types, manage scaling, apply Photon, and handle runtime upgrades automatically for job runs.\nHow should the data engineer meet this requirement while adhering to Databricks constraints?\n\nA. Use a Pro SQL warehouse and schedule Python notebook tasks to execute as pipeline steps.\nB. Use an all-purpose cluster with cluster policies to enforce standard sizes and enable autoscaling.\nC. Create a job with a single-task job cluster and manually set the instance families and minimum/maximum workers.\nD. Run the job on a serverless compute for workflows configuration, ensuring Unity Catalog is enabled and regional support is available.",
+    "answer": "D",
+    "explanation": "Serverless compute\n- Databricks가 인스턴스 선택/스케일링/Photon/런타임 업그레이드 자동 처리\n- Unity Catalog 호환\n\nA → SQL warehouse 는 SQL 쿼리 실행에 특화\nB → all-purpose 클러스터는 auto-select instance types, upgrades automatically for job runs 제공 안함\nC → 수동 설정"
+  },
+  {
+    "id": 103,
+    "question": "A data engineer has been using a Databricks SQL dashboard to monitor the cleanliness of the input data to a data analytics dashboard for a retail use case. The job has a Databricks SQL query that returns the number of store-level records where sales is equal to zero. \nThe data engineer wants their entire team to be notified via a messaging webhook whenever this value is greater than 0.\nWhich of the following approaches can the data engineer use to notify \ntheir entire team via a messaging webhook whenever the number of \nstores with $0 in sales is greater than zero?\n\nA. They can set up an Alert with a custom template\nB. They can set up an Alert with a new email alert destination  \nC. They can set up an Alert with one-time notifications\nD. They can set up an Alert with a new webhook alert destination\nE. They can set up an Alert without notifications",
+    "answer": "D",
+    "explanation": "webhook alert : 조건을 만족할 때 자동 알림 가능"
+  },
+  {
+    "id": 104,
+    "question": "An organization needs to share a dataset stored in its Databricks Unity Catalog with an external partner who uses a different data platform that is not Databricks. The goal is to maintain data security and ensure the partner can access the data efficiently.\nWhich method should the data engineer use to securely share the dataset with the external partner?\n\nA. Using Delta Sharing with the open sharing protocol\nB. Exporting data as CSV files and emailing them\nC. Using a third-party API to access the Delta table\nD. Databricks-to-Databricks Sharing",
+    "answer": "A",
+    "explanation": "Delta Sharing : Databricks 간 또는 Databricks 외부와 Delta 테이블을 안전하게 공유할 수 있는 프로토콜"
+  },
+  {
+    "id": 105,
+    "question": "A data engineer is attempting to drop a Spark SQL table my_table. The data engineer wants to delete all table metadata and data.\nThey run the following command:\nDROP TABLE IF EXISTS my_table\nWhile the object no longer appears when they run SHOW TABLES, the data files still exist.\nWhich of the following describes why the data files still exist and the metadata files were deleted?\n\nA. The table's data was larger than 10 GB\nB. The table's data was smaller than 10 GB\nC. The table was external\nD. The table did not have a location\nE. The table was managed",
+    "answer": "C",
+    "explanation": "Managed Table : 테이블의 데이터 파일 + 메타데이터 둘 다 삭제됨\n→ Databricks가 데이터 위치도 관리\n\nExternal Table : 테이블의 메타데이터만 삭제됨. 데이터 파일은 남아 있음\n→ 데이터 위치가 외부이기 때문에 Databricks는 파일을 지우지 않음"
+  },
+  {
+    "id": 106,
+    "question": "A data engineer needs to parse only png files in a directory that contains files with different\nsuffixes. Which code should the data engineer use to achieve this task?\n\nA\ndf = spark.readStream.format(\"cloudFiles\") \\  .option(\"cloudFiles.format\", \"binaryFile\") \\  .append(\"/*.png\")\n\nB\ndf = spark.readStream.format(\"cloudFiles\") \\\n  .option(\"cloudFiles.format\", \"binaryFile\") \\\n  .option(\"pathGlobFilter\", \"*.png\") \\\n  .load(<base-path>)\n\nC\ndf = spark.readStream.format(\"cloudFiles\") \\  .option(\"cloudFiles.format\", \"binaryFile\") \\  .option(\"pathGlobFilter\", \"*.png\") \\  .append()\n\nD\ndf = spark.readStream.format(\"cloudFiles\") \\  .option(\"cloudFiles.format\", \"binaryFile\") \\  .load(\"/*.png\")",
+    "answer": "B",
+    "explanation": "PDF와 답변 상이하며 정답은 PDF와 답변 상이하며 정답은 B\npathGlobFilter : 특정 확장자 파일만 읽도록 필터링\n.load(<path>) : 실제 파일이 위치한 디렉토리 경로 지정\ncloudFiles.format : 파일 타입 지정"
+  },
+  {
+    "id": 107,
+    "question": "Which query is performing a streaming hop from raw data to a Bronze table?\n\nA.\n(spark.table(\"sales\")\n  .groupBy(\"store\")\n  .agg(sum(\"sales\"))\n  .writeStream\n  .option(\"checkpointLocation\", checkpointPath)\n  .outputMode(\"complete\")\n  .table(\"newSales\")\n  )\nB.\n(spark.table(\"sales\")\n  .withColumn(\"avgPrice\", col(\"sales\") / col(\"units\")) \n  .writeStream\n  .option(\"checkpointLocation\", checkpointPath)\n  .outputMode(\"append\")\n  .table(\"newSales\")\n)\nC.\n(spark.read.load(rawSalesLocation)\n  .write.mode(\"append\")\n  .table(\"newSales\")\n)\nD.\n(spark.readStream.load(rawSalesLocation)\n  .withStream\n  .option(\"checkpointLocation\", checkpointPath)\n  .outputMode(\"append\")\n  .table(\"newSales\")\n)",
+    "answer": "D",
+    "explanation": "Streaming hop : raw 데이터 → bronze table 같이 실시간 스트리밍 데이터를 다음 단계 테이블로 이동시키는 과정\n- readStream / writeStream 사용\n- checkpointLocation 지정\n- 실시간으로 데이터가 들어올 때마다 계속 업데이트"
+  },
+  {
+    "id": 108,
+    "question": "A data engineer wants to schedule their Databricks SQL dashboard to refresh every hour, but\nthey only want the associated SQL endpoint to be running when it is necessary. The\ndashboard has multiple queries on multiple datasets associated with it. The data that feeds\nthe dashboard is automatically processed using a Databricks Job.\nWhich of the following approaches can the data engineer use to minimize the total running\ntime of the SQL endpoint used in the refresh schedule of their dashboard?\n\nA. They can turn on the Auto Stop feature for the SQL endpoint.\nB. They can ensure the dashboard's SQL endpoint is not one of the included query's SQL\nendpoint.\nC. They can reduce the cluster size of the SQL endpoint.\nD. They can ensure the dashboard's SQL endpoint matches each of the queries' SQL\nendpoints.\nE. They can set up the dashboard's SQL endpoint to be serverless.",
+    "answer": "A",
+    "explanation": "Auto Stop : SQL endpoint 가 일정시간 idle 상태면(아무 작업도 하고 있지 않은 상태) 자동으로 종료"
+  },
+  {
+    "id": 109,
+    "question": "A Delta Live Table pipeline includes two datasets defined using STREAMING LIVE TABLE.\nThree datasets are defined against Delta Lake table sources using LIVE TABLE.\nThe table is configured to run in Development mode using the Continuous Pipeline Mode.\nAssuming previously unprocessed data exists and all definitions are valid, what is the expected outcome after clicking Start to update the pipeline?\n\nA. All datasets will be updated once and the pipeline will shut down. The compute resources\nwill be terminated.\nB. All datasets will be updated at set intervals until the pipeline is shut down. The compute\nresources will persist until the pipeline is shut down.\nC. All datasets will be updated once and the pipeline will persist without any processing. The\ncompute resources will persist but go unused.\nD. All datasets will be updated once and the pipeline will shut down. The compute resources\nwill persist to allow for additional testing.\nE. All datasets will be updated at set intervals until the pipeline is shut down. The compute\nresources will persist to allow for additional testing.",
+    "answer": "B",
+    "explanation": "Development Mode\n- Compute 리소스는 pipeline이 종료될 때까지 유지됨 → 빠른 재실행 가능\n\nContinuous Pipeline Mode\n- 스트리밍 데이터처럼 새로운 데이터가 들어오면 자동으로 처리\n- Scheduled (interval) 단위로 계속 처리, pipeline 종료 전까지 멈추지 않음"
+  },
+  {
+    "id": 110,
+    "question": "A data engineer has a Job with multiple tasks that runs nightly. Each of the tasks runs slowly\nbecause the clusters take a long time to start.\nWhich of the following actions can the data engineer perform to improve the start up time for\nthe clusters used for the Job?\n\nA. They can use endpoints available in Databricks SQL\nB. They can use jobs clusters instead of all-purpose clusters\nC. They can configure the clusters to be single-node\nD. They can use clusters that are from a cluster pool\nE. They can configure the clusters to autoscale for larger data sizes",
+    "answer": "D",
+    "explanation": "Cluster pool\n- 미리 준비된 클러스터를 바로 가져와서 cold start 를 없애 시작 시간 단축\n\nJob cluster\n- Job 실행 전용이지만, 시작 시간 지연은 여전함"
+  },
+  {
+    "id": 111,
+    "question": "Which type of workloads are compatible with Auto Loader?\n\nA. Streaming workloads\nB. Machine learning workloads\nC. Serverless workloads\nD. Batch workloads",
+    "answer": "A",
+    "explanation": "Auto Loader\n- 클라우드 스토리지에 새로 들어오는 파일을 자동으로 감지하고 처리\n- 주로 대량의 파일이 지속적으로 들어오는 경우 사용\n- Streaming mode : 실시간으로 파일 처리\n- Micro-batch mode : 사실상 배치처럼 동작하지만 작은 단위로 계속 처리 가능"
+  },
+  {
+    "id": 112,
+    "question": "Which of the following data workloads will utilize a Gold table as its source?\n\nA. A job that enriches data by parsing its timestamps into a human-readable format\nB. A job that aggregates uncleaned data to create standard summary statistics\nC. A job that cleans data by removing malformatted records\nD. A job that queries aggregated data designed to feed into a dashboard\nE. A job that ingests raw data from a streaming source into the Lakehouse",
+    "answer": "D",
+    "explanation": "Bronze : 원시 데이터 (raw)\nSilver : 정제 데이터(cleaned)\nGold : 고급 집계/요약 데이터"
+  },
+  {
+    "id": 113,
+    "question": "A data engineer is writing a script that is meant to ingest new data from cloud storage. In the\nevent of the Schema change, the ingestion should fail. It should fail until the changes\ndownstream source can be found and verified as intended changes.\nWhich command will meet the requirements?\n\nA. addNewColumns\nB. failOnNewColumns\nC. rescue\nD. none",
+    "answer": "B",
+    "explanation": "addNewColumns : 새 컬럼이 들어와도 자동으로 테이블 스키마에 추가\nfailOnNewColumns : 새 컬럼이 들어오면 ingestion 실패\nrescue : 실패한 레코드를 별도 컬럼/파일로 저장"
+  },
+  {
+    "id": 114,
+    "question": "A data engineer is attempting to drop a Spark SQL table my_table and runs the following\ncommand:\nDROP TABLE IF EXISTS my_table;\nAfter running this command, the engineer notices that the data files and metadata files have been deleted from the file system.\nWhich of the following describes why all of these files were deleted?\n\nA. The table was managed\nB. The table's data was smaller than 10 GB\nC. The table's data was larger than 10 GB\nD. The table was external\nE. The table did not have a location",
+    "answer": "A",
+    "explanation": "Managed Table : 테이블의 데이터 파일 + 메타데이터 둘 다 삭제됨\n→ Databricks가 데이터 위치도 관리\n\nExternal Table : 테이블의 메타데이터만 삭제됨. 데이터 파일은 남아 있음\n→ 데이터 위치가 외부이기 때문에 Databricks는 파일을 지우지 않음"
+  },
+  {
+    "id": 115,
+    "question": "A data engineer needs to conduct Exploratory Analysis on data residing in a database that is within the company's custom-defined network in the cloud. The data engineer is using SQL for this task.\nWhich type of SQL Warehouse will enable the data engineer to process large numbers of queries quickly and cost-effectively?\n\nA. Serverless compute for notebooks\nB. Serverless SQL Warehouse\nC. Classic SQL Warehouse\nD. Pro SQL Warehouse",
+    "answer": "B",
+    "explanation": "Serverless SQL Warehouse\n- SQL 전용 서버리스 환경\n- 자동 스케일링, 빠른 쿼리 처리\n- 사용량 기반 과금이라 비용 효율적"
+  },
+  {
+    "id": 116,
+    "question": "A new data engineering team team has been assigned to an ELT project. The new data engineering team will need full privileges on the table sales to fully manage the project.\nWhich of the following commands can be used to grant full permissions on the database to the new data engineering team?\n\nA. GRANT ALL PRIVILEGES ON TABLE sales TO team;\nB. GRANT SELECT CREATE MODIFY ON TABLE sales TO team;\nC. GRANT SELECT ON TABLE sales TO team;\nD. GRANT USAGE ON TABLE sales TO team;\nE. GRANT ALL PRIVILEGES ON TABLE team TO sales;",
+    "answer": "A",
+    "explanation": "GRANT ALL PRIVILEGES : 모든 작업가능\n- SELECT, INSERT, UPDATE, DELETE, MODIFY 등"
+  },
+  {
+    "id": 117,
+    "question": "A data engineer needs to apply custom logic to string column city in table stores for a specific use case. In order to apply this custom logic at scale, the data engineer wants to create a SQL user-defined function (UDF).\nWhich of the following code blocks creates this SQL UDF?\n\nA. \nCREATE FUNCTION combine_nyc (city STRING)\nRETURNS STRING\nRETURN CASE\n   WHEN city = 'brooklyn\" THEN \"new york\"\n   ELSE city\nEND;\nB.\nCREATE UDF combine_nyc (city STRING)\nRETURNS STRING\nCASE\n   WHEN city = 'brooklyn\" THEN \"new york\"\n   ELSE city\nEND;\nC.\nCREATE UDF combine_nyc (city STRING)\nRETURN CASE\n   WHEN city = 'brooklyn\" THEN \"new york\"\n   ELSE city\nEND;\nD.\nCREATE FUNCTION combine_nyc (city STRING)\nRETURN CASE\n   WHEN city = 'brooklyn\" THEN \"new york\"\n   ELSE city\nEND;\nE.\nCREATE UDF combine_nyc (city STRING)\nRETURNS STRING\nRETURN CASE\n   WHEN city = 'brooklyn\" THEN \"new york\"\n   ELSE city\nEND;",
+    "answer": "A",
+    "explanation": "SQL UDF 기본 문법\nCREATE [TEMPORARY] FUNCTION function_name ([param_name param_type, ...])\nRETURNS return_type\nRETURN expression;"
+  },
+  {
+    "id": 118,
+    "question": "A data engineer has realized that the data files associated with a Delta table are incredibly small. They want to compact the small files to form larger files to improve performance.\nWhich of the following keywords can be used to compact the small files?\n\nA. REDUCE\nB. OPTIMIZE\nC. COMPACTION\nD. REPARTITION\nE. VACUUM",
+    "answer": "B",
+    "explanation": "OPTIMIZE : Delta 테이블의 작은 파일을 병합해 큰 파일로 만들기\nREPARTITION : Spark DataFrame에서 파티션 재조정\nVACUUM : 오래된 파일 삭제"
+  },
+  {
+    "id": 119,
+    "question": "A data engineer has realized that they made a mistake when making a daily update to a table. They need to use Delta time travel to restore the table to a version that is 3 days old.\nHowever, when the data engineer attempts to time travel to the older version, they are unable to restore the data because the data files have been deleted.\nWhich of the following explains why the data files are no longer present?\n\nA. The VACUUM command was run on the table\nB. The TIME TRAVEL command was run on the table\nC. The DELETE HISTORY command was run on the table\nD. The OPTIMIZE command was nun on the table\nE. The HISTORY command was run on the table",
+    "answer": "A",
+    "explanation": "TIME TRAVEL : 과거 버전의 데이터를 조회/복원 가능\nVACUUM : 오래된 Delta 파일을 실제로 삭제 (삭제된 파일은 복원 불가)\nDELETE HISTORY : Delta 테이블의 버전 히스토리 삭제 (버전 조회 불가)\nOPTIMIZE : 파일 병합/정리\nHISTORY : 테이블 버전 기록 조회"
+  },
+  {
+    "id": 120,
+    "question": "Which of the following describes a scenario in which a data engineer will want to use a single-node cluster?\n\nA. When they are working interactively with a small amount of data\nB. When they are running automated reports to be refreshed as quickly as possible\nC. When they are working with SQL within Databricks SQL\nD. When they are concerned about the ability to automatically scale with larger data\nE. When they are manually running reports with a large amount of data",
+    "answer": "A",
+    "explanation": "Single-Node Cluster\n- 단일 노드 (드라이버와 워커가 하나의 머신에서 실행됨)\n- 소규모 데이터에 적합\n- 인터랙티브 개발 용이 (빠른 테스트, 디버깅)\n- 비용 효율적 → 클러스터 오버헤드 적음\n- 자동 스케일링 불가 → 큰 데이터에는 비효율적\n- 병렬 처리 제한 → 대규모 배치에는 적합하지 않음"
+  },
+  {
+    "id": 121,
+    "question": "A data engineer at a company that uses Databricks with Unity Catalog needs to share a collection of tables with an external partner who also uses a Databricks workspace enabled for Unity Catalog. The data engineer decides to use Delta Sharing to accomplish this.\nWhat is the first piece of information the data engineer should request from the external partner to set up Delta Sharing?\n\nA. Their Databricks account password\nB. The name of their Databricks cluster\nC. The IP address of their Databricks workspace\nD. The sharing identifier of their Unity Catalog metastore",
+    "answer": "D",
+    "explanation": "Delta Sharing : Databricks 간 또는 Databricks 외부와 Delta 테이블을 안전하게 공유할 수 있는 프로토콜\n- 공유하는 쪽 : Share 객체 생성 → 테이블/뷰 지정 → 공유 링크 발급\n- 받는 쪽 : Sharing identifier 필요 → 자신의 클라이언트에서 읽기 가능\n- 패스워드, 클러스터명, IP는 필요 없음"
+  },
+  {
+    "id": 122,
+    "question": "A data engineer has joined an existing project and they see the following query in the project\nrepository:\nCREATE STREAMING LIVE TABLE loyal_customers AS\nSELECT customer_id \nFROM STREAM(LIVE.customers)\nWHERE loyalty_level = 'high';\nWhich of the following describes why the STREAM function is included in the query?\n\nA. The STREAM function is not needed and will cause an error.\nB. The table being created is a live table.\nC. The customers table is a streaming live table.\nD. The customers table is a reference to a Structured Streaming query on a PySpark\nDataFrame.\nE. The data in the customers table has been updated since its last run.",
+    "answer": "C",
+    "explanation": "STREAM() 함수\n- 기존 테이블을 스트리밍 소스로 읽어올 때 사용\n- 일반 테이블을 스트리밍 테이블처럼 처리할 수 있도록 변환"
+  },
+  {
+    "id": 123,
+    "question": "A data engineer needs to create a table in Databricks using data from their organization's\nexisting SQLite database.\nThey run the following command:\nCREATE TABLE jdbc_customer360\nUSING ___\nOPTIONS (\n url \"jdbc:sqlite:/customers.db\",\n dbtable \"customer360\")\nWhich of the following lines of code fills in the above blank to successfully complete the task?\n\nA. org.apache.spark.sql.jdbc\nB. autoloader\nC. DELTA\nD. sqlite\nE. org.apache.spark.sql.sqlite",
+    "answer": "A",
+    "explanation": "PDF와 답변 상이하며 정답은 A\norg.apache.spark.sql.jdbc : Spark 에서 JDBC 연결 시 사용되는 표준 데이터소스"
+  },
+  {
+    "id": 124,
+    "question": "Which of the following is hosted completely in the control plane of the classic Databricks architecture?\nA. Worker node\nB. JDBC data source\nC. Databricks web application\nD. Databricks Filesystem\nE. Driver node",
+    "answer": "C",
+    "explanation": "Control Plane : 관리 및 UI 제공\n- Databricks 관리, 사용자 계정, Workspace UI, Job Scheduling, SQL Dashboard 등\n\nData Plane : 실제 데이터 처리 및 저장\n- 고객 클러스터가 실제 데이터 처리, Worker/Driver 실행, 외부 데이터 소스 연결"
+  },
+  {
+    "id": 125,
+    "question": "A data engineer needs to optimize the data layout and query performance for an e-commerce transactions Delta table. The table is partitioned by \"purchase_date\" a date column which helps with time-based queries but does not optimize searches on user statistics \"customer_id\", a high-cardinality column.\nThe table is usually queried with filters on \"customer_id\" within specific date ranges, but since this data is spread across multiple files in each partition, it results in full partition scans and increased runtime and costs.\nHow should the data engineer optimize the Data Layout for efficient reads?\n\nA. Alter table implementing liquid clustering on \"customerid\" while keeping the existing partitioning.\nB. Alter the table to partition by \"customer_id\".\nC. Enable delta caching on the cluster so that frequent reads are cached for performance.\nD. Alter the table implementing liquid clustering by \"customer_id\" and \"purchase_date\".",
+    "answer": "D",
+    "explanation": "Liquid Clustering\n- 파일을 특정 컬럼 기준으로 자동 정렬\n- 기존 partition 유지 가능\n- high-cardinality column에 적합"
+  },
+  {
+    "id": 126,
+    "question": "A dataset has been defined using Delta Live Tables and includes an expectations clause:\nCONSTRAINT valid_timestamp EXPECT (timestamp > '2020-01-01') ON VIOLATION FAIL UPDATE What is the expected behavior when a batch of data containing data that violates these constraints is processed?\n\nA. Records that violate the expectation cause the job to fail.\nB. Records that violate the expectation are added to the target dataset and flagged as invalid in a field added to the target dataset.\nC. Records that violate the expectation are dropped from the target dataset and recorded as invalid in the event log.\nD. Records that violate the expectation are added to the target dataset and recorded as invalid in the event log.",
+    "answer": "A",
+    "explanation": "PDF와 답변 상이하며 정답은 A\nON VIOLATION FAIL UPDATE : 위반하는 레코드 있으면 해당 배치 전체 실패\nDROP ROW : 위반 레코드만 삭제\nCONTINUE : 위반 레코드 무시하고 계속 처리"
+  },
+  {
+    "id": 127,
+    "question": "Identify a scenario to use an external table.\nA Data Engineer needs to create a parquet bronze table and wants to ensure that it gets stored in a specific path in an external location.\nWhich table can be created in this scenario?\n\nA. An external table where the location is pointing to specific path in external location.\nB. An external table where the schema has managed location pointing to specific path in external location.\nC. A managed table where the catalog has managed location pointing to specific path in external location.\nD. A managed table where the location is pointing to specific path in external location.",
+    "answer": "A",
+    "explanation": "External Table\n- 데이터 저장 위치 직접 지정 가능\n- 데이터는 external storage 경로에 저장\n\nManaged Table\n- 저장 위치를 Databricks가 자동 관리\n- 사용자가 직접 path 지정 안함"
+  },
+  {
+    "id": 128,
+    "question": "A data engineer has been using a Databricks SQL dashboard to monitor the cleanliness of the input data to an ELT job. The ELT job has its Databricks SQL query that returns the number of input records containing unexpected NULL values. The data engineer wants their entire team to be notified via a messaging webhook whenever this value reaches 100.\nWhich of the following approaches can the data engineer use to notify their entire team via a messaging webhook whenever the number of NULL values reaches 100?\n\nA. They can set up an Alert with a custom template.\nB. They can set up an Alert with a new email alert destination.\nC. They can set up an Alert with a new webhook alert destination.\nD. They can set up an Alert with one-time notifications.\nE. They can set up an Alert without notifications.",
+    "answer": "C",
+    "explanation": "Databricks SQL Alert 설정 가능\n- 구성 요소 : query 결과 기준 설정 / Notification destination 설정\n- Notification 방식 : 이메일 / Webhook / Slack 등"
+  },
+  {
+    "id": 129,
+    "question": "Which of the following approaches should be used to send the Databricks Job owner an email in the case that the Job fails?\n\nA. Manually programming in an alert system in each cell of the Notebook\nB. Setting up an Alert in the Job page\nC. Setting up an Alert in the Notebook\nD. There is no way to notify the Job owner in the case of Job failure\nE. MLflow Model Registry Webhooks",
+    "answer": "B",
+    "explanation": "Databricks Job 설정에서 Notifications / Alerts 설정 가능 (이메일 자동 발송)\n- On start\n- On success\n- On failure"
+  },
+  {
+    "id": 130,
+    "question": "Identify how the count_if function and the count where x is null can be used Consider a table\nrandom_values with below data.\nWhat would be the output of below query?\nselect count_if(col > 1) as count_a. count(*) as count_b.count(col1) as count_c \nfrom random_values col1\n0\n1\n2\nNULL -\n2\n3\n\nA. 3 6 5\nB. 4 6 5\nC. 3 6 6\nD. 4 6 6",
+    "answer": "A",
+    "explanation": "count_if(조건) : 조건 만족하는 row만 count\ncount(*) : 모든 row count (null 포함)\ncount(컬럼) : null 제외 count"
+  },
+  {
+    "id": 131,
+    "question": "A data engineer needs access to a table new_table, but they do not have the correct permissions. They can ask the table owner for permission, but they do not know who the table owner is.\nWhich of the following approaches can be used to identify the owner of new_table?\n\nA. Review the Permissions tab in the table's page in Data Explorer\nB. All of these options can be used to identify the owner of the table\nC. Review the Owner field in the table's page in Data Explorer\nD. Review the Owner field in the table's page in the cloud storage solution\nE. There is no way to identify the owner of the table",
+    "answer": "C",
+    "explanation": "Data Explorer : 데이터 자산에 대한 모든 메타데이터를 관리\n- Owner field : 테이블 소유자 확인 / 권한 관리 가능\n- Permissions tab : 권한 목록 조회"
+  },
+  {
+    "id": 132,
+    "question": "A data engineer manages multiple external tables linked to various data sources. The data engineer wants to manage these external tables efficiently and ensure that only the\nnecessary permissions are granted to users for accessing specific external tables.\nHow should the data engineer manage access to these external tables?\n\nA. Create a single user role with full access to all external tables and assign it to all users.\nB. Use Unity Catalog to manage access controls and permissions for each external table individually.\nC. Set up Azure Blob Storage permissions at the container level, allowing access to all external tables.\nD. Grant permissions on the Databricks workspace level, which will automatically apply to all external tables.",
+    "answer": "B",
+    "explanation": "Unity Catalog\n - catalog / schema / table 권한 관리\n - external table도 동일하게 관리"
+  },
+  {
+    "id": 133,
+    "question": "In which of the following scenarios should a data engineer use the MERGE INTO command instead of the INSERT INTO command?\n\nA. When the location of the data needs to be changed\nB. When the target table is an external table\nC. When the source table can be deleted\nD. When the target table cannot contain duplicate records\nE. When the source is not a Delta table",
+    "answer": "D",
+    "explanation": "INSERT INTO : 새로운 행을 타겟 테이블에 추가 (append). 중복 발생\nMERGE INTO : 조건을 확인하여 데이터가 있으면 수정 (update) / 없으면 삽입 (insert)"
+  },
+  {
+    "id": 134,
+    "question": "A data engineer has configured a Structured Streaming job to read from a table, manipulate\nthe data, and then perform a streaming write into a new table.\n(spark.table(\"sales\")\n  .withColumn(\"avg_price\", col(\"sales\") / col(\"units\"))\n  .writeStream\n  .option(\"checkpointLocation\", checkpointPath)\n  .outputMode(\"complete\")\n  .___\n  .table(\"newSales\")\n  )\nThe cade block used by the data engineer is below:\nIf the data engineer only wants the query to execute a micro-batch to process data every 5 seconds, which of the following lines of code should the data engineer use to fill in the blank?\n\nA. trigger(\"5 seconds\")\nB. trigger()\nC. trigger(once=\"5 seconds\")\nD. trigger(processingTime=\"5 seconds\")\nE. trigger(continuous=\"5 seconds\")",
+    "answer": "D",
+    "explanation": "trigger() : 기본 설정 (가능한 빠르게 계속 실행)\nonce : 한 번만 실행\ntrigger(processingTime=\"5 seconds\") : 5초마다 배치 실행"
+  },
+  {
+    "id": 135,
+    "question": "A data engineer has written a function in a Databricks Notebook to calculate the population of bacteria in a given medium.\ndef calculate_population_of_bacteria (intiial_population, exponential_factor)\n   return future_population = initial_population ** expontential_factor\nAnalysts use this function in the notebook and sometimes provide input arguments of the wrong data type, which can cause errors during execution.\nWhich Databricks feature will help the data engineer quickly identify if an incorrect data type has been provided as input?\n\nA. The Data Engineer should add print statements to find out what the variable is.\nB. The Databricks debugger enables breakpoints that will raise an error if the wrong data type is submitted\nC. The Spark User interface has a debug tab that contains the variables that are used in this session.\nD. The Databricks debugger enables the use of a variable explorer to see at a glance the value of the variables.",
+    "answer": "D",
+    "explanation": "Variable Explorer\n - 현재 변수 값 확인\n - 데이터 타입 확인\n - 디버깅 시 매우 유용"
+  },
+  {
+    "id": 136,
+    "question": "Which of the following can be used to simplify and unify siloed data architectures that are specialized for specific use cases?\n\nA. None of these\nB. Data lake\nC. Data warehouse\nD. All of these\nE. Data lakehouse",
+    "answer": "E",
+    "explanation": "Data Lakehouse\n - Data Lake + Data Warehouse 통합\n - 하나의 데이터 플랫폼\n - siloed architecture 제거"
+  },
+  {
+    "id": 137,
+    "question": "A data engineering project involves processing large batches of data on a daily schedule using ETL. The jobs are resource-intensive and vary in size, requiring a scalable, cost efficient compute solution that can automatically scale based on the workload.\nWhich compute approach will satisfy the needs described?\n\nA. Databricks SQL Serverless\nB. Dedicated Cluster\nC. All-Purpose Cluster\nD. Job Cluster",
+    "answer": "D",
+    "explanation": "Job Cluster\n - job 실행 시 생성\n - 작업 끝나면 자동 종료\n - 비용 효율적\n - 자동 scaling 가능"
+  },
+  {
+    "id": 138,
+    "question": "A data engineer is working on a personal laptop and needs to perform complex transformations on data stored in a Delta Lake on cloud storage. The engineer decides to use Databricks Connect to interact with Databricks clusters and work in their local IDE.\nHow does Databricks Connect enable the engineer to develop, test, and debug code seamlessly on their local machine while interacting with Databricks clusters?\n\nA. By allowing direct execution of Spark jobs from the local machine without needing a network connection\nB. By providing a local environment that mimics the Databricks runtime, enabling the engineer to develop, test, and debug code using a specific IDE that is required by Databricks\nC. By providing a local environment that mimics the Databricks runtime, enabling the engineer to develop, test, and debug code using their preferred ide\nD. By providing a local environment that mimics the Databricks runtime, enabling the engineer to develop, test, and debug code only through Databricks' own web interface",
+    "answer": "C",
+    "explanation": "Databricks Connect\n - 로컬 환경에서 코드 작성\n - IDE 사용 (VS Code / PyCharm 등)\n - 실제 실행은 Databricks cluster\n\nA → cluster와 통신해야 하므로 네트워크 연결 필요\nB → 특정 IDE 제한 없음\nD → 웹이 아닌 로컬 IDE 사용하기 위함"
+  },
+  {
+    "id": 139,
+    "question": "A data engineer wants to create a new table containing the names of customers who live in France.\nThey have written the following command:\nCREATE TABLE customersInFrance\n_____ AS\nSELECT id,\nfirstName,\nlastName\nFROM customerLocations\nWHERE country = 'FRANCE';\nA senior data engineer mentions that it is organization policy to include a table property indicating that the new table includes personally identifiable information (Pll).\nWhich line of code fills in the above blank to successfully complete the task?\n\nA. COMMENT \"Contains PIT\nB. 511\nC. \"COMMENT PII\"\nD. TBLPROPERTIES PII",
+    "answer": "D",
+    "explanation": "TBLPROPERTIES : 테이블 속성 추가할 때 사용\n\nCOMMENT : 설명\n\n※ D 보기는 문법 오류. 정확한 정답 : TBLPROPERTIES ('PII' = 'true')"
+  },
+  {
+    "id": 140,
+    "question": "Which of the following describes the relationship between Gold tables and Silver tables?\n\nA. Gold tables are more likely to contain aggregations than Silver tables.\nB. Gold tables are more likely to contain valuable data than Silver tables.\nC. Gold tables are more likely to contain a less refined view of data than Silver tables.\nD. Gold tables are more likely to contain more data than Silver tables.\nE. Gold tables are more likely to contain truthful data than Silver tables.",
+    "answer": "A",
+    "explanation": "Gold Layer\n - aggregation (집계된 데이터)\n - business metrics (비즈니스 분석용 데이터)\n - BI / dashboard (대시보드 / 리포트 생성에 사용)"
+  },
+  {
+    "id": 141,
+    "question": "Which file format is used for storing Delta Lake Table?\n\nA. Parquet\nB. Delta\nC. SV\nD. JSON",
+    "answer": "A",
+    "explanation": "Delta Lake 저장 구조\n - Parquet : 데이터 파일\n - _delta_log : 트랜잭션 로그"
+  },
+  {
+    "id": 142,
+    "question": "A data engineer is inspecting an ETL pipeline based on a Pyspark job that consistently encounters performance bottlenecks. Based on developer feedback, the data engineer assumes the job is low on compute resources. To pinpoint the issue, the data engineer observes the Spark Ul and finds out the job has a high CPU time vs Task time.\nWhich course of action should the data engineer take?\n\nA. High CPU time vs Task time means an under-utilized cluster. The data engineer may need to repartition data to spread the jobs more evenly throughout the cluster.\nB. High CPU time vs Task time means efficient use of cluster and no change needed\nC. High CPU time vs Task time means over-utilized memory and the need to increase parallelism\nD. High CPU time vs Task time means a CPU over-utilized job. The data engineer may need to consider executor and core tuning or resizing the cluster",
+    "answer": "D",
+    "explanation": "CPU time 높음 → CPU 사용량이 높음\n해결방법\n - excutor core tuning\n - cluster resize\n - compute 증가"
+  },
+  {
+    "id": 143,
+    "question": "Which of the following SQL keywords can be used to convert a table from a long format to a wide format?\n\nA. PIVOT\nB. CONVERT\nC. WHERE\nD. TRANSFORM\nE. SUM",
+    "answer": "A",
+    "explanation": "long format → wide format = PIVOT\nwide format → long format = UNPIVOT\n\nB → 데이터 타입 변환\nC → 필터 조건\nD → 일반 SQL 키워드 아님\nE → 집계 함수"
+  },
+  {
+    "id": 144,
+    "question": "A data engineer works for an organization that must meet a stringent Service Level Agreement (SLA) that demands minimal runtime errors and high availability for its data processing pipelines. The data engineer wants to avoid the operational overhead of managing and tuning clusters.\nWhich architectural solution will meet the requirements?\n\nA. Implement a hybrid approach with scheduled batch jobs on custom cloud VMs.\nB. Use an auto-scaling cluster configured and monitored by the user.\nC. Utilize Databricks serverless compute that automatically optimizes resources and abstracts cluster management.\nD. Deploy a dedicated, manually managed cluster optimized by in-house IT staff.",
+    "answer": "C",
+    "explanation": "Databricks serverless compute\n - cluster 관리 필요 없음\n - 자동 resource 최적화\n - 높은 안정성 / SLA\n\n※ SLA : 서비스가 어느정도 수준으로 안정적으로 제공되어야 하는지에 대한 약속\n - 가용성 / 응답시간 / 에러허용 수준 / 복구 시간 등"
+  },
+  {
+    "id": 145,
+    "question": "A new data engineering team has been assigned to work on a project. The team will need access to database customers in order to see what tables already exist. The team has its own group team.\nWhich of the following commands can be used to grant the necessary permission on the entire database to the new team?\n\nA. GRANT VIEW ON CATALOG customers TO team;\nB. GRANT CREATE ON DATABASE customers TO team;\nC. GRANT USAGE ON CATALOG team TO customers;\nD. GRANT CREATE ON DATABASE team TO customers;\nE. GRANT USAGE ON DATABASE customers TO team;",
+    "answer": "E",
+    "explanation": "USAGE → 객체 접근 및 참조 가능 (조회 가능)\nCREATE → 객체 생성 가능\nSELECT → 테이블/뷰 조회 가능\nVIEW → Catalog 전체 구조 확인"
+  },
+  {
+    "id": 146,
+    "question": "A dataset has been defined using Delta Live Tables and includes an expectations clause:\nCONSTRAINT valid_timestamp EXPECT (timestamp > '2020-01-01') ON VIOLATION DROP ROW \nWhat is the expected behavior when a batch of data containing data that violates these constraints is processed?\n\nA. Records that violate the expectation are dropped from the target dataset and loaded into a quarantine table.\nB. Records that violate the expectation are added to the target dataset and flagged as invalid in a field added to the target dataset.\nC. Records that violate the expectation are dropped from the target dataset and recorded as invalid in the event log.\nD. Records that violate the expectation are added to the target dataset and recorded as invalid in the event log.\nE. Records that violate the expectation cause the job to fail.",
+    "answer": "C",
+    "explanation": "ON VIOLATION DROP ROW\n - 조건을 만족하지 않는 Row는 Drop\n - target table에 저장되지 않음\n - DLT event log 에 기록\n - pipeline 계속 실행"
+  },
+  {
+    "id": 147,
+    "question": "A data engineer has a Job that has a complex run schedule, and they want to transfer that schedule to other Jobs.\nRather than manually selecting each value in the scheduling form in Databricks, which of the following tools can the data engineer use to represent and submit the schedule programmatically?\n\nA. pyspark.sql.types.DateType\nB. datetime\nC. pyspark.sql.types.TimestampType\nD. Cron syntax\nE. There is no way to represent and submit this information programmatically",
+    "answer": "D",
+    "explanation": "Cron syntax\n - 대부분의 컴퓨팅 시스템에서 시간 기반 스케줄링을 정의할 때 사용하는 표준 언어\n - 텍스트 형태라 코드로 관리 용이\n - 여러 Job에 재사용 가능"
+  },
+  {
+    "id": 148,
+    "question": "A data engineer has created a new database using the following command:\nCREATE DATABASE IF NOT EXISTS customer360;\nIn which of the following locations will the customer360 database be located?\n\nA. dbfs:/user/hive/database/customer360\nB. dbfs:/user/hive/warehouse\nC. dbfs:/user/hive/customer360\nD. More information is needed to determine the correct response",
+    "answer": "B",
+    "explanation": "현재 dbfs hive metastore는 사용되지 않으며, (regacy) Unity Catlaog를 \n사용한다.\n기본 경로는 hive/warehouse 안이며, 따라서 \ndbfs:/user/hive/warehouse/customer360 으로 생성된다"
+  },
+  {
+    "id": 149,
+    "question": "A team creates YAML manifests that declare jobs, resources, and dependencies, then deploys them to Databricks using the Databricks CLI. The deployment succeeds.\nWhich feature are they using?\n\nA. Databricks Asset Bundles\nB. GitHub\nC. Terraform\nD. DataOps",
+    "answer": "A",
+    "explanation": "Databricks Asset Bundles\n - 복잡한 프로젝트를 하나의 패키지로 묶어 관리하는 표준 방식\n - YAML 기반 프로젝트 정의\n - job / pipeline /resources 선언\n - Databricks CLI 로 deploy\n - Dev → Test → Prod 배포 자동화"
+  },
+  {
+    "id": 150,
+    "question": "Which of the following commands will return the number of null values in the member_id column?\n\nA. SELECT count(member_id) FROM my_table;\nB. SELECT count(member_id) - count_null(member_id) FROM my_table;\nC. SELECT count_if(member_id IS NULL) FROM my_table;\nD. SELECT null(member_id) FROM my_table;\nE. SELECT count_null(member_id) FROM my_table;",
+    "answer": "C",
+    "explanation": "count_if(조건) : 조건을 만족하는 row 개수 count"
+  },
+  {
+    "id": 151,
+    "question": "Which of the following describes the relationship between Bronze tables and raw data?\n\nA. Bronze tables contain less data than raw data files.\nB. Bronze tables contain more truthful data than raw data.\nC. Bronze tables contain aggregates while raw data is unaggregated.\nD. Bronze tables contain a less refined view of data than raw data.\nE. Bronze tables contain raw data with a schema applied.",
+    "answer": "E",
+    "explanation": "Raw Data : S3, Azure, AWS 등에 저장된 JSON, CSV, Parquet 등의 원시 파일\nBronze\n - Raw Data ingest\n - schema 적용\n - 최소한의 transformation"
+  },
+  {
+    "id": 152,
+    "question": "Identify the impact of ON VIOLATION DROP ROW and ON VIOLATION FAIL UPDATE for a constraint violation.\nA data engineer has created an ETL pipeline using Delta Live table to manage their company travel reimbursement detail, they want to ensure that the if the location details has not been provided by the employee, the pipeline needs to be terminated.\nHow can the scenario be implemented?\n\nA. CONSTRAINT valid_location EXPECT (location = NULL)\nB. CONSTRAINT valid_location EXPECT (location != NULL) ON VIOLATION FAIL UPDATE\nC. CONSTRAINT valid_location EXPECT (location != NULL) ON DROP ROW\nD. CONSTRAINT valid_location EXPECT (location != NULL) ON VIOLATION FAIL",
+    "answer": "B",
+    "explanation": "EXPECT 옵션\n - ON VIOLATION DROP ROW : 조건 위반 ROW 삭제 + 계속 실행\n - ON VIOLATION FAIL UPDATE : 조건 위반 시, 전체 업데이트 중단 및 FAIL 처리"
+  },
+  {
+    "id": 153,
+    "question": "A data engineer needs to determine whether to use the built-in Databricks Notebooks versioning or version their project using Databricks Repos.\nWhich of the following is an advantage of using Databricks Repos over the Databricks Notebooks versioning?\n\nA. Databricks Repos automatically saves development progress\nB. Databricks Repos supports the use of multiple branches\nC. Databricks Repos allows users to revert to previous versions of a notebook\nD. Databricks Repos provides the ability to comment on specific changes\nE. Databricks Repos is wholly housed within the Databricks Lakehouse Platform",
+    "answer": "B",
+    "explanation": "Databricks Repos\n - Git 기반 버전 관리\n - branch 지원\n - GitHub / GitLab / Bitbucket 연동\n\nNotebook versioning\n - 단순 revision history\n - Git 기능 없음"
+  },
+  {
+    "id": 154,
+    "question": "A data engineer is developing an ETL process based on Spark SQL. The execution fails. The data engineer checks the Spark Ul and can see the ERRORS as follows:\n\"java.lang.OutofMemoryError: Java heap space\"\nWhich two corrective actions should the data engineer perform to resolve this issue?\nChoose 2 answers - (Q) Narrow the filters in order to collect less data in the query\n\nA. Upsize the worker nodes and activate autoshuffle partitions\nB. Upsize the driver node and deactivate autoshuffle partitions\nC. Cache the dataset in order to boost the query performance\nD. Fix the shuffle partitions to 50 to ensure the allocation",
+    "answer": "A,B",
+    "explanation": "java.lang.OutOfMemoryError: Java heap space\n → Spark 메모리가 부족해서 작업 실패\n\n해결 방법\n - 처리하는 데이터 양 줄이기\n - 클러스터 메모리 늘리기\n\nA → Executor 메모리 증가 + auto shuffle 설정으로 부하 분산\nB → Driver heap 메모리 증가"
+  },
+  {
+    "id": 155,
+    "question": "What is the primary function of the Silver layer in the Databricks medallion architecture?\n\nA. lngest raw data in its original state\nB. Validate, clean, and deduplicate data for further processing\nC. Aggregate and enrich data for business analytics\nD. Store historical data solely for auditing purposes",
+    "answer": "B",
+    "explanation": "Silver Layer → 분석 가능한 형태로 정리된 데이터\n - validate (검증)\n - clean (정제)\n - Deduplicate (중복 제거)\n - shema 정리 / 표준화\n - join / filtering"
+  },
+  {
+    "id": 156,
+    "question": "Which of the following describes a scenario in which a data team will want to utilize cluster pools?\n\nA. An automated report needs to be refreshed as quickly as possible.\nB. An automated report needs to be made reproducible.\nC. An automated report needs to be tested to identify errors.\nD. An automated report needs to be version-controlled across multiple collaborators.\nE. An automated report needs to be runnable by all stakeholders.",
+    "answer": "A",
+    "explanation": "Cluster Pool\n - 클러스터가 필요할 때 즉시 할당되도록 VM 을 대기상태로 미리 준비\n - 작업을 최대한 빨리 시작해야 할 때 사용"
+  },
+  {
+    "id": 157,
+    "question": "An organization plans to share a large dataset stored in a Databricks workspace on AWS with a partner organization whose Databricks workspace is hosted on Azure. The data engineer wants to minimize data transfer costs while ensuring secure and efficient data sharing.\nWhich strategy will reduce data egress costs associated with cross-cloud data sharing?\n\nA. Sharing data via pre-signed URLs without monitoring egress costs\nB. Migrating the dataset to Cloudflare R2 object storage before sharing\nC. Configure VPN connection between AWS and Azure for faster data sharing\nD. Using Delta Sharing without any additional configurations",
+    "answer": "D",
+    "explanation": "Delta Sharing\n - 데이터를 복사하지 않고 다른 조직/클라우드와 안전하게 공유하는 오픈 데이터 공유 프로토콜\n - AWS ↔ Azure ↔ GCP 간 데이터 공유 가능\n - Single source 유지 (데이터를 복사하지 않고, 원본 Delta table 그대로 공유)\n - Secure sharing (Unity Catalog 와 통합 가능)\n - External sharing (다른 worksape 와도 가능)\n\nA → 데이터 이동 발생\nB → Migration 비용 발생\nC → 비용을 줄여주지 않음"
+  },
+  {
+    "id": 158,
+    "question": "A Data Engineer is building a simple data pipeline using Delta Live Tables (DLT) in Databricksto ingest customer data. The raw customer data is stored in a cloud storage location in JSON format. The task is to create a DLT pipeline that reads the rawJSON data\nand writes it into a Delta table for further processing.\nWhich code snippet will correctly ingest the raw JSON data and create a Delta table using DLT?\n\nA.\nimport dlt\n\n@dlt.table\ndef raw_customer():\n   return spark.read.format(\"csv\").load(\"s3://my-bucket/raw-customers/\")\nB.\nimport dlt\n\n@dlt.table\ndef raw_customer():\n   return spark.read.json(\"s3://my-bucket/raw-customers/\")\nC.\nimport dlt\n\n@dlt.view\ndef raw_customer():\n   return spark.format.json(\"s3://my-bucket/raw-customers/\")\nD.\nimport dlt\n\n@dlt.table\ndef raw_customer():\n   return spark.read.format(\"parquet).load(\"s3://my-bucket/raw-customers/\")",
+    "answer": "B",
+    "explanation": "DLT 테이블 생성 기본 코드\nimport dlt\n\n@dlt.table\ndef table_name( ):\n     return spark.read.format(\"json\").load(\"path\")\n  or return spark.read.json(\"path\")\n\n@dlt.table → Delta table 생성\nspark.read.json() → JSON 읽기"
+  },
+  {
+    "id": 159,
+    "question": "A data engineer has a Python variable table_name that they would like to use in a SQL query. They want to construct a Python code block that will run the query using table_name.\nThey have the following incomplete code block:\n____(f\"SELECT customer_id, spend FROM {table_name}\")\nWhich of the following can be used to fill in the blank to successfully complete the task?\n\nA. spark.delta.sql\nB. spark.delta.table\nC. spark.table\nD. dbutils.sql\nE. spark.sql",
+    "answer": "E",
+    "explanation": "SQL 을 수행하는 Spark 메서드\n - spark.sql"
+  },
+  {
+    "id": 160,
+    "question": "A data organization leader is upset about the data analysis team's reports being different from the data engineering team's reports. The leader believes the siloed nature of their organization's data engineering and data analysis architectures is to blame.\nWhich of the following describes how a data lakehouse could alleviate this issue?\n\nA. Both teams would autoscale their work as data size evolves\nB. Both teams would use the same source of truth for their work\nC. Both teams would reorganize to report to the same department\nD. Both teams would be able to collaborate on projects in real-time\nE. Both teams would respond more quickly to ad-hoc requests",
+    "answer": "B",
+    "explanation": "Lakehouse 구조\n - Data Lake + Data Warehouse 통합\n - 하나의 데이터 플랫폼\n - single source of truth\n\nsingle source of truth (단일 원천)\n - 동일한 Delta table\n - 동일한 데이터 레이크\n - 동일한 데이터 거버넌스"
+  }
+]
