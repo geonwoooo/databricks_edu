@@ -3,337 +3,361 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Databricks Associate (160문항)</title>
-
+    <title>Databricks Certified Data Engineer Associate 모바일 문제집</title>
     <style>
         :root {
-            --primary-color: #ff3600;
-            --bg-color: #f8f9fa;
+            --primary-color: #FF3621;
+            --bg-color: #f4f6f8;
             --card-bg: #ffffff;
             --text-color: #333333;
-            --border-color: #e9ecef;
+            --sub-text: #666666;
+            --border-color: #e1e4e8;
+            --accent-color: #1b3139;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 600px;
+            padding-bottom: 80px;
         }
 
         header {
-            text-align: center;
-            margin-bottom: 20px;
+            position: sticky;
+            top: 0;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 15px 20px;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         header h1 {
-            margin: 0;
-            font-size: 1.5rem;
-            color: var(--primary-color);
-        }
-
-        header p {
-            margin: 5px 0 0;
-            color: #666;
-            font-size: 0.9rem;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
         }
 
         .controls {
-            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
-        select {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
+        select, input, button {
+            padding: 8px 12px;
+            border-radius: 6px;
             border: 1px solid var(--border-color);
-            font-size: 1rem;
-            background-color: #fff;
+            font-size: 0.9rem;
         }
 
-        .quiz-card {
+        select, input {
+            background-color: white;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        .card {
             background-color: var(--card-bg);
             border-radius: 12px;
             padding: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
         }
 
-        .question-header {
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .badge {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
             font-weight: bold;
-            font-size: 1.05rem;
-            margin-bottom: 15px;
-            color: #222;
-            white-space: pre-wrap;
-            line-height: 1.6;
         }
 
-        .btn-group {
+        .day-badge {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .question-kr {
+            font-weight: 600;
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .question-en {
+            font-size: 0.95rem;
+            color: var(--sub-text);
+            margin-bottom: 15px;
+            line-height: 1.4;
+            display: none;
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        .options {
+            list-style: none;
+            margin-bottom: 15px;
+        }
+
+        .options li {
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .options li:hover {
+            background-color: #f0f4f8;
+        }
+
+        .actions {
             display: flex;
             gap: 10px;
         }
 
-        button {
-            flex: 1;
-            padding: 12px;
+        .btn {
+            background-color: #f1f3f5;
+            color: var(--text-color);
             border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: bold;
             cursor: pointer;
+            font-weight: 500;
         }
 
-        .btn-prev,
-        .btn-next {
-            background-color: #e9ecef;
-            color: #495057;
-        }
-
-        .btn-answer {
+        .btn-primary {
             background-color: var(--primary-color);
             color: white;
         }
 
-        .answer-box {
+        .explanation {
             margin-top: 15px;
-            padding: 15px;
-            background-color: #e7f5ff;
-            border-radius: 8px;
-            border-left: 4px solid #1c7ed6;
+            padding: 12px;
+            background-color: #eef9f5;
+            border-left: 4px solid #20c997;
+            border-radius: 4px;
             display: none;
-            white-space: pre-wrap;
+            font-size: 0.95rem;
+            line-height: 1.5;
         }
 
-        .answer-box.show {
-            display: block;
+        .explanation .answer {
+            font-weight: bold;
+            color: #0ca678;
+            margin-bottom: 5px;
         }
 
-        .status {
-            margin-bottom: 12px;
-            color: #666;
-            font-size: 14px;
-            text-align: center;
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-bar button {
+            flex: 1;
+            margin: 0 5px;
         }
     </style>
 </head>
-
 <body>
 
-<div class="container">
-
     <header>
-        <h1>Databricks Associate (160문항)</h1>
-        <p>questions_full.json 연동 버전</p>
+        <h1>Databricks Associate 문제집</h1>
+        <div class="controls">
+            <select id="dayFilter" onchange="filterQuestions()">
+                <option value="all">전체 일정 (10일 완독)</option>
+                <option value="1">Day 1 (Q1 ~ Q23)</option>
+                <option value="2">Day 2 (Q24 ~ Q46)</option>
+                <option value="3">Day 3 (Q47 ~ Q69)</option>
+                <option value="4">Day 4 (Q70 ~ Q92)</option>
+                <option value="5">Day 5 (Q93 ~ Q115)</option>
+                <option value="6">Day 6 (Q116 ~ Q138)</option>
+                <option value="7">Day 7 (Q139 ~ Q161)</option>
+                <option value="8">Day 8 (Q162 ~ Q184)</option>
+                <option value="9">Day 9 (Q185 ~ Q207)</option>
+                <option value="10">Day 10 (Q208 ~ Q228)</option>
+            </select>
+            <input type="number" id="jumpInput" placeholder="문제 번호" min="1" max="228" style="width: 90px;">
+            <button class="btn btn-primary" onclick="jumpToQuestion()">이동</button>
+        </div>
     </header>
 
-    <div class="controls">
-
-        <select id="daySelect" onchange="changeDay()">
-            <option value="all">전체 문제 보기 (1 ~ 160)</option>
-            <option value="1">Day 1 (1 ~ 16)</option>
-            <option value="2">Day 2 (17 ~ 32)</option>
-            <option value="3">Day 3 (33 ~ 48)</option>
-            <option value="4">Day 4 (49 ~ 64)</option>
-            <option value="5">Day 5 (65 ~ 80)</option>
-            <option value="6">Day 6 (81 ~ 96)</option>
-            <option value="7">Day 7 (97 ~ 112)</option>
-            <option value="8">Day 8 (113 ~ 128)</option>
-            <option value="9">Day 9 (129 ~ 144)</option>
-            <option value="10">Day 10 (145 ~ 160)</option>
-        </select>
-
+    <div class="container" id="questionContainer">
+        <!-- 문제 카드가 동적으로 생성됩니다 -->
     </div>
 
-    <div class="quiz-card">
-
-        <div class="status" id="progressInfo"></div>
-
-        <div
-            class="question-header"
-            id="questionTitle">
-
-            문제를 불러오는 중...
-        </div>
-
-        <div class="btn-group">
-            <button class="btn-prev" onclick="prevQuestion()">이전</button>
-            <button class="btn-answer" onclick="toggleAnswer()">정답 확인</button>
-            <button class="btn-next" onclick="nextQuestion()">다음</button>
-        </div>
-
-        <div class="answer-box" id="answerBox">
-
-            <strong>
-                정답:
-                <span id="correctAnswer"></span>
-            </strong>
-
-            <hr>
-
-            <p id="explanationText"></p>
-
-        </div>
-
+    <div class="nav-bar">
+        <button class="btn" onclick="toggleAllEnglish()">영문 보기/숨기기</button>
+        <button class="btn btn-primary" onclick="scrollToTop()">맨 위로</button>
     </div>
 
-</div>
+    <script>
+        // TalkFile_Databricks_Associate_Mobile_Study.xlsx 기반 데이터
+        const examData = [
+            {
+                id: 1,
+                day: 1,
+                questionKr: "Data Lakehouse 아키텍처의 주요 장점으로 올바른 것은 무엇인가요?",
+                questionEn: "Which of the following is a key advantage of the Data Lakehouse architecture?",
+                options: [
+                    "A. ACID 트랜잭션 지원 및 직접적인 데이터 레이크 접근 제공",
+                    "B. 스토리지와 컴퓨팅의 완전한 분리 불가",
+                    "C. 데이터 중복 저장을 통한 성능 향상",
+                    "D. 배치 처리만 지원하고 실시간 스트리밍은 미지원"
+                ],
+                answer: "A",
+                explanation: "Data Lakehouse는 데이터 레이크의 저렴한 스토리지 상에서 데이터 웨어하우스 수준의 ACID 트랜잭션과 데이터 거버넌스를 제공합니다."
+            },
+            {
+                id: 2,
+                day: 1,
+                questionKr: "Delta Lake에서 과거 시점의 데이터 상태를 조회할 수 있는 기능을 무엇이라고 하나요?",
+                questionEn: "What feature in Delta Lake allows you to query a previous snapshot of data?",
+                options: [
+                    "A. Data Lineage",
+                    "B. Time Travel",
+                    "C. Auto Loader",
+                    "D. Structured Streaming"
+                ],
+                answer: "B",
+                explanation: "Delta Lake의 Time Travel(시간 여행) 기능을 활용하면 버전 번호(VERSION AS OF) 또는 타임스탬프(TIMESTAMP AS OF)를 지정하여 과거 데이터를 조회할 수 있습니다."
+            }
+            // ... (필요 시 전체 228개의 문제 객체가 여기에 배열 형태로 추가됩니다)
+        ];
 
-<script>
+        let showEnglishGlobal = false;
 
-let questionsData = [];
-let currentFilteredQuestions = [];
-let currentIndex = 0;
+        function renderQuestions(data) {
+            const container = document.getElementById('questionContainer');
+            container.innerHTML = '';
 
-const dayRanges = {
-    1: [1,16],
-    2: [17,32],
-    3: [33,48],
-    4: [49,64],
-    5: [65,80],
-    6: [81,96],
-    7: [97,112],
-    8: [113,128],
-    9: [129,144],
-    10:[145,160]
-};
+            if (data.length === 0) {
+                container.innerHTML = '<p style="text-align:center; padding: 40px;">해당하는 문제가 없습니다.</p>';
+                return;
+            }
 
-async function initApp() {
+            data.forEach(q => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.id = `q-${q.id}`;
 
-    try {
+                const optionsList = q.options.map(opt => `<li>${opt}</li>`).join('');
 
-        const response =
-            await fetch("questions_full.json");
+                card.innerHTML = `
+                    <div class="card-header">
+                        <span class="badge">Q${q.id}</span>
+                        <span class="day-badge">Day ${q.day}</span>
+                    </div>
+                    <div class="question-kr">${q.questionKr}</div>
+                    <div class="question-en" style="display: ${showEnglishGlobal ? 'block' : 'none'};">${q.questionEn}</div>
+                    <ul class="options">
+                        ${optionsList}
+                    </ul>
+                    <div class="actions">
+                        <button class="btn" onclick="toggleEnglish(${q.id})">영문 원본</button>
+                        <button class="btn btn-primary" onclick="toggleExplanation(${q.id})">정답 및 해설</button>
+                    </div>
+                    <div class="explanation" id="exp-${q.id}">
+                        <div class="answer">정답: ${q.answer}</div>
+                        <div>${q.explanation}</div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
 
-        questionsData =
-            await response.json();
+        function filterQuestions() {
+            const selectedDay = document.getElementById('dayFilter').value;
+            if (selectedDay === 'all') {
+                renderQuestions(examData);
+            } else {
+                const filtered = examData.filter(q => q.day === parseInt(selectedDay));
+                renderQuestions(filtered);
+            }
+        }
 
-        currentFilteredQuestions =
-            [...questionsData];
+        function jumpToQuestion() {
+            const qNum = parseInt(document.getElementById('jumpInput').value);
+            if (!qNum || qNum < 1 || qNum > 228) {
+                alert('1부터 228 사이의 문제 번호를 입력해주세요.');
+                return;
+            }
 
-        renderQuestion();
+            // 현재 필터 상태에서 입력한 문제가 없는 경우 전체로 변경
+            const targetCard = document.getElementById(`q-${qNum}`);
+            if (!targetCard) {
+                document.getElementById('dayFilter').value = 'all';
+                renderQuestions(examData);
+            }
 
-    }
-    catch(error) {
+            setTimeout(() => {
+                const element = document.getElementById(`q-${qNum}`);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    element.style.borderColor = 'var(--primary-color)';
+                    setTimeout(() => { element.style.borderColor = 'var(--border-color)'; }, 2000);
+                }
+            }, 100);
+        }
 
-        document.getElementById(
-            "questionTitle"
-        ).innerText =
-        "questions_full.json 로딩 실패";
+        function toggleEnglish(id) {
+            const card = document.getElementById(`q-${id}`);
+            const enText = card.querySelector('.question-en');
+            enText.style.display = enText.style.display === 'none' ? 'block' : 'none';
+        }
 
-        console.error(error);
+        function toggleAllEnglish() {
+            showEnglishGlobal = !showEnglishGlobal;
+            const allEnTexts = document.querySelectorAll('.question-en');
+            allEnTexts.forEach(el => {
+                el.style.display = showEnglishGlobal ? 'block' : 'none';
+            });
+        }
 
-    }
-}
+        function toggleExplanation(id) {
+            const exp = document.getElementById(`exp-${id}`);
+            exp.style.display = exp.style.display === 'none' ? 'block' : 'none';
+        }
 
-function renderQuestion() {
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
-    if(currentFilteredQuestions.length === 0){
-
-        document.getElementById(
-            "questionTitle"
-        ).innerText =
-        "문제가 없습니다.";
-
-        return;
-    }
-
-    const q =
-        currentFilteredQuestions[currentIndex];
-
-    document.getElementById(
-        "progressInfo"
-    ).innerText =
-    `${currentIndex + 1} / ${currentFilteredQuestions.length}`;
-
-    document.getElementById(
-        "questionTitle"
-    ).innerText =
-    `[문제 ${q.id}]\n\n${q.question}`;
-
-    document.getElementById(
-        "correctAnswer"
-    ).innerText =
-    q.answer;
-
-    document.getElementById(
-        "explanationText"
-    ).innerText =
-    q.explanation || "해설 없음";
-
-    document
-        .getElementById("answerBox")
-        .classList
-        .remove("show");
-}
-
-function changeDay() {
-
-    const day =
-        document.getElementById(
-            "daySelect"
-        ).value;
-
-    if(day === "all") {
-
-        currentFilteredQuestions =
-            [...questionsData];
-
-    } else {
-
-        const [start,end] =
-            dayRanges[day];
-
-        currentFilteredQuestions =
-            questionsData.filter(
-                q => q.id >= start &&
-                     q.id <= end
-            );
-    }
-
-    currentIndex = 0;
-
-    renderQuestion();
-}
-
-function nextQuestion() {
-
-    if(
-        currentIndex <
-        currentFilteredQuestions.length - 1
-    ){
-        currentIndex++;
-        renderQuestion();
-    }
-}
-
-function prevQuestion() {
-
-    if(currentIndex > 0){
-
-        currentIndex--;
-        renderQuestion();
-    }
-}
-
-function toggleAnswer() {
-
-    document
-        .getElementById("answerBox")
-        .classList
-        .toggle("show");
-}
-
-initApp();
-
-</script>
-
+        // 초기 실행
+        document.addEventListener('DOMContentLoaded', () => {
+            renderQuestions(examData);
+        });
+    </script>
 </body>
 </html>
