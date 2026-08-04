@@ -18,7 +18,7 @@
             padding: 20px; 
             background-color: var(--bg-color); 
             color: var(--text-color);
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
         }
         h1 {
@@ -48,7 +48,24 @@
             margin-bottom: 15px; 
             white-space: pre-wrap; 
         }
-        /* 보기 선택 영역 */
+        /* 영문 보기 영역 스타일 */
+        .english-section {
+            margin-top: 10px;
+            margin-bottom: 15px;
+            display: none;
+            padding: 12px;
+            background-color: #fff8c5;
+            border: 1px solid #ffe58f;
+            border-radius: 4px;
+            font-size: 0.95em;
+            color: #594500;
+        }
+        .english-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+        /* 보기 선택 라디오 버튼 영역 */
         .options-group {
             margin-bottom: 15px;
             display: flex;
@@ -59,7 +76,7 @@
             cursor: pointer;
             font-size: 0.95em;
         }
-        /* 우측 메모 영역 토글 버튼 스타일 */
+        /* 우측 메모 패널 토글 버튼 */
         .memo-toggle-btn {
             background: #f1f8ff;
             border: 1px solid #c8e1ff;
@@ -74,7 +91,7 @@
         .memo-toggle-btn:hover {
             background: #e1f0ff;
         }
-        /* 우측 메모 입력창 패널 */
+        /* 우측 메모장 입력창 */
         .memo-panel {
             display: none;
             width: 250px;
@@ -124,6 +141,7 @@
             display: flex;
             gap: 10px;
             margin-top: 10px;
+            flex-wrap: wrap;
         }
         .action-btn { 
             padding: 6px 12px; 
@@ -138,7 +156,13 @@
         .action-btn:hover { 
             background-color: #005cc5; 
         }
-        /* 페이징 네비게이션 */
+        .eng-btn {
+            background-color: #f68a00;
+        }
+        .eng-btn:hover {
+            background-color: #d97700;
+        }
+        /* 페이징 네비게이션 스타일 */
         .pagination {
             display: flex;
             justify-content: center;
@@ -234,7 +258,7 @@
             document.getElementById('next-btn-top').disabled = currentPage === totalPages;
             document.getElementById('next-btn-bottom').disabled = currentPage === totalPages;
 
-            // 현재 페이지에 해당하는 데이터 슬라이스
+            // 현재 페이지 데이터 슬라이스 (10개씩)
             const startIdx = (currentPage - 1) * itemsPerPage;
             const currentItems = allQuestions.slice(startIdx, startIdx + itemsPerPage);
 
@@ -247,12 +271,22 @@
                 const mainDiv = document.createElement('div');
                 mainDiv.className = 'question-main';
 
+                // 한국어 문제 텍스트
                 const qText = document.createElement('div');
                 qText.className = 'question-text';
                 qText.textContent = `Q${item.id || (actualIndex + 1)}. ${item.question}`;
                 mainDiv.appendChild(qText);
 
-                // 정답 체크 (라디오 버튼) 영역 생성 (A, B, C, D 보기 자동 생성 예시 혹은 기본 체크박스)
+                // 영문 보기 영역 (JSON에 english_question 필드가 있을 때 연동)
+                const englishSection = document.createElement('div');
+                englishSection.className = 'english-section';
+                englishSection.innerHTML = `
+                    <div class="english-title">🌐 Original Question (영문 원본)</div>
+                    <div>${item.english_question || item.question}</div>
+                `;
+                mainDiv.appendChild(englishSection);
+
+                // 보기 라디오 버튼 생성 (A, B, C, D)
                 const optionsGroup = document.createElement('div');
                 optionsGroup.className = 'options-group';
                 ['A', 'B', 'C', 'D'].forEach(opt => {
@@ -263,7 +297,7 @@
                 });
                 mainDiv.appendChild(optionsGroup);
 
-                // 버튼 그룹 (해설 보기 & 메모장 토글 버튼)
+                // 버튼 그룹 (해설 보기, 영문 보기, 메모장 토글 버튼)
                 const btnGroup = document.createElement('div');
                 btnGroup.className = 'btn-group';
 
@@ -271,11 +305,16 @@
                 ansBtn.className = 'action-btn';
                 ansBtn.textContent = '💡 정답 및 해설 보기';
 
+                const engBtn = document.createElement('button');
+                engBtn.className = 'action-btn eng-btn';
+                engBtn.textContent = '🌐 영문 보기';
+
                 const memoToggleBtn = document.createElement('button');
                 memoToggleBtn.className = 'memo-toggle-btn';
                 memoToggleBtn.textContent = '메모 〉';
 
                 btnGroup.appendChild(ansBtn);
+                btnGroup.appendChild(engBtn);
                 btnGroup.appendChild(memoToggleBtn);
                 mainDiv.appendChild(btnGroup);
 
@@ -295,7 +334,7 @@
                 ansSection.appendChild(expText);
                 mainDiv.appendChild(ansSection);
 
-                // 해설 버튼 이벤트
+                // 해설 버튼 클릭 이벤트
                 ansBtn.onclick = () => {
                     if (ansSection.style.display === 'block') {
                         ansSection.style.display = 'none';
@@ -303,6 +342,17 @@
                     } else {
                         ansSection.style.display = 'block';
                         ansBtn.textContent = '숨기기';
+                    }
+                };
+
+                // 영문 보기 버튼 클릭 이벤트
+                engBtn.onclick = () => {
+                    if (englishSection.style.display === 'block') {
+                        englishSection.style.display = 'none';
+                        engBtn.textContent = '🌐 영문 보기';
+                    } else {
+                        englishSection.style.display = 'block';
+                        engBtn.textContent = '영문 숨기기';
                     }
                 };
 
@@ -317,7 +367,7 @@
                 `;
                 card.appendChild(memoPanel);
 
-                // 우측 메모 토글 버튼 이벤트 ('>' 또는 '<' 전환)
+                // 우측 메모 토글 버튼 이벤트
                 memoToggleBtn.onclick = () => {
                     if (memoPanel.style.display === 'block') {
                         memoPanel.style.display = 'none';
@@ -331,7 +381,7 @@
                 container.appendChild(card);
             });
 
-            // 페이지 변경 시 화면 맨 위로 부드럽게 스크롤
+            // 페이지 이동 시 상단으로 부드럽게 스크롤
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
